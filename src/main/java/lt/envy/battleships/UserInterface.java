@@ -18,9 +18,9 @@ public class UserInterface {
     }
 
     public User setUpPlayers(Scanner sc, UserService service) {
-        System.out.println("Enter name for PlayerOne: \n");
+        System.out.println("Enter name for PlayerOne: ");
         String playerOneName = sc.nextLine();
-        System.out.println("Enter email for PlayerOne: \n");
+        System.out.println("Enter email for PlayerOne: ");
         String playerOneEmail = sc.nextLine();
 
         try {
@@ -49,9 +49,11 @@ public class UserInterface {
         gameService.waitForGameStatusChange(game);
 
         System.out.println(gameService.getStatus(game.getGameId()));
-        String[][] myBoard = gameService.generateBoard();
         String[][] enemyBoard = gameService.generateBoard();
-//        gameService.printBoardTemplate(enemyBoard,game);
+        String[][] myBoard = gameService.generateBoard();
+        System.out.println("---___ENEMY_BOARD___---");
+        gameService.printBoard(enemyBoard,game);
+        System.out.println("---___PLAYER_BOARD___---");
         gameService.printBoard(myBoard,game);
 
 

@@ -86,7 +86,7 @@ public class GameService {
     public void waitForGameStatusChange(Game game) throws InterruptedException, IOException, ParseException {
         while (!GameStatus.READY_FOR_SHIPS.equals(getStatus(game.getGameId()))) {
             System.out.println("...waiting for second player");
-            Thread.sleep(4000);
+            Thread.sleep(3333);
             System.out.println("...");
         }
 //        // EXECUTE METHOD TO DEPLOY SHIPS
@@ -101,7 +101,6 @@ public class GameService {
                 arena[i][j] = ".";
             }
         }
-
         return arena;
     }
 
@@ -133,6 +132,9 @@ public class GameService {
         return (String) gameStatus.get("status");
     }
 
+    //TODO Now its time for ship deployment
+    // create a method which takes a scanner for user input. Then convert user input to coordinates and deploy a ship.
+    // Maybe gather all the inputs and string build them to a URL to deploy all ships at once
     private void deployShips(Game game) {
         game.getColumns();
         game.getRows();
