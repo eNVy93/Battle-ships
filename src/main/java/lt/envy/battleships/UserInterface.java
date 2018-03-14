@@ -49,8 +49,11 @@ public class UserInterface {
         gameService.waitForGameStatusChange(game);
 
         System.out.println(gameService.getStatus(game.getGameId()));
-        System.out.println(game.getColumns());
-        System.out.println(game.getRows());
+        String[][] myBoard = gameService.generateBoard();
+        String[][] enemyBoard = gameService.generateBoard();
+//        gameService.printBoardTemplate(enemyBoard,game);
+        gameService.printBoard(myBoard,game);
+
 
     }
 }

@@ -27,13 +27,6 @@ public class Game {
     private List<Long> rows;
 
 
-    public Game(String gameId, String status, String winnerId, String nextTurnForUserId) {
-        this.gameId = gameId;
-        this.status = status;
-        this.winnerId = winnerId;
-        this.nextTurnForUserId = nextTurnForUserId;
-    }
-
     public Game(String gameId, String status, List<Event> listOfEvents, String winnerId, String nextTurnForUserId, List<String> columns, List<Long> rows) {
         this.gameId = gameId;
         this.status = status;
