@@ -24,9 +24,17 @@ public class Game {
     private String winnerId;
     private String nextTurnForUserId;
     private List<String> columns;
-    private List<Integer> rows;
+    private List<Long> rows;
 
-    public Game(String gameId, String status, List<Event> listOfEvents, String winnerId, String nextTurnForUserId, List<String> columns, List<Integer> rows) {
+
+    public Game(String gameId, String status, String winnerId, String nextTurnForUserId) {
+        this.gameId = gameId;
+        this.status = status;
+        this.winnerId = winnerId;
+        this.nextTurnForUserId = nextTurnForUserId;
+    }
+
+    public Game(String gameId, String status, List<Event> listOfEvents, String winnerId, String nextTurnForUserId, List<String> columns, List<Long> rows) {
         this.gameId = gameId;
         this.status = status;
         this.listOfEvents = listOfEvents;
@@ -44,11 +52,11 @@ public class Game {
         this.columns = columns;
     }
 
-    public List<Integer> getRows() {
+    public List<Long> getRows() {
         return rows;
     }
 
-    public void setRows(List<Integer> rows) {
+    public void setRows(List<Long> rows) {
         this.rows = rows;
     }
 
