@@ -18,9 +18,14 @@ public class App {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, ParseException, InterruptedException {
-        ui.printGreeting();
-        User user = ui.setUpPlayers(scanner,service);
-        ui.initialiseGame(user,gameService);
+
+//       // ONLINE BATTLESHIP
+//        ui.printGreeting();
+//        User user = ui.setUpPlayers(scanner,service);
+//        ui.initialiseGame(user,gameService);
+
+        //OFFLINE TEST
+        ui.offlineTest(null,null,gameService);
 
         //TODO method that waits for status change
     }

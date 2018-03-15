@@ -25,6 +25,10 @@ public class Game {
     private String nextTurnForUserId;
     private List<String> columns;
     private List<Long> rows;
+    private String[][] playerBoard;
+    private String[][] enemyBoard;
+    private List<Ship> shipyard;
+
 
 
     public Game(String gameId, String status, List<Event> listOfEvents, String winnerId, String nextTurnForUserId, List<String> columns, List<Long> rows) {
@@ -35,6 +39,31 @@ public class Game {
         this.nextTurnForUserId = nextTurnForUserId;
         this.columns = columns;
         this.rows = rows;
+        shipyard = new ArrayList<>();
+    }
+
+    public List<Ship> getShipyard() {
+        return shipyard;
+    }
+
+    public void setShipyard(List<Ship> shipyard) {
+        this.shipyard = shipyard;
+    }
+
+    public String[][] getPlayerBoard() {
+        return playerBoard;
+    }
+
+    public void setPlayerBoard(String[][] playerBoard) {
+        this.playerBoard = playerBoard;
+    }
+
+    public String[][] getEnemyBoard() {
+        return enemyBoard;
+    }
+
+    public void setEnemyBoard(String[][] enemyBoard) {
+        this.enemyBoard = enemyBoard;
     }
 
     public List<String> getColumns() {
