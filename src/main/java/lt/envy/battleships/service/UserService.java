@@ -39,10 +39,11 @@ public class UserService {
         return convertJsonToUser(responseAsString);
 
     }
+
     private User convertJsonToUser(String responce) throws ParseException {
         JSONParser parser = new JSONParser();
 
-        JSONObject jsonUser = (JSONObject)parser.parse(responce);
+        JSONObject jsonUser = (JSONObject) parser.parse(responce);
         String userName = (String) jsonUser.get("name");
         String userEmail = (String) jsonUser.get("email");
         String userId = (String) jsonUser.get("id");

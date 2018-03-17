@@ -17,6 +17,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GameService {
 
@@ -66,7 +67,7 @@ public class GameService {
 
     }
 
-    public String getStatus(String gameId) throws IOException, ParseException {
+    public String getStatusString(String gameId) throws IOException, ParseException {
         StringBuilder statusURL = new StringBuilder(URLConstants.SERVER_URL);
         statusURL.append(URLConstants.GAME_STATUS_METHOD).append("game_id=").append(gameId);
 
@@ -75,20 +76,8 @@ public class GameService {
 
         HttpResponse response = client.execute(getStatus);
 
-        String responseString = utilityService.convertInputStreamToString(response.getEntity().getContent());
+        return utilityService.convertInputStreamToString(response.getEntity().getContent());
 
-        return getStatusFromResponse(responseString);
-
-    }
-
-    public void waitForGameStatusChange(Game game) throws InterruptedException, IOException, ParseException {
-        while (!GameStatus.READY_FOR_SHIPS.equals(getStatus(game.getGameId()))) {
-            System.out.println("...waiting for second player");
-            Thread.sleep(3333);
-            System.out.println("...");
-        }
-//        // EXECUTE METHOD TO DEPLOY SHIPS
-//            deployShips(game); // TODO implemet
     }
 
     public String[][] generateBoard() {
@@ -96,10 +85,76 @@ public class GameService {
         String[][] arena = board.getBoard();
         for (int i = 0; i < arena.length; i++) {
             for (int j = 0; j < arena[i].length; j++) {
-                arena[i][j] = ".";
+                arena[i][j] = GameStatus.WATER_SYMBOL;
             }
         }
         return arena;
+    }
+
+    public Ship deployShip(Game game, Coordinate startCoordinate, int shipSize, char orientation) {
+
+        List<String> columnHeaders = game.getColumns();
+        List<Long> rowHeaders = game.getRows();
+        String startCol = startCoordinate.getColumn();
+
+        int startRow = startCoordinate.getRow();
+
+        int columnIndex = columnHeaders.indexOf(startCol);
+        //Horizontal
+        // When ship is horizontal, the row is constant and we iterate trough columns
+        if ('h' == orientation) {
+            for (int i = 0; i < shipSize; i++) {
+                if (i == (shipSize - 1)) {
+                    return new Ship(startCoordinate, new Coordinate(columnHeaders.get(columnIndex + i), startRow));
+                }
+            }
+        }
+        //Vertical
+        if ('v' == orientation) {
+            for (int i = 0; i < shipSize; i++) {
+                if (i == (shipSize - 1)) {
+                    return new Ship(startCoordinate, new Coordinate(columnHeaders.get(columnIndex), (startRow + i)));
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addShipToShipyard(Game game, Ship ship) {
+        List<Ship> shipyard = game.getShipyard();
+        shipyard.add(ship);
+        game.setShipyard(shipyard);
+    }
+
+    public void sendShips(Game game, String shipyardCoordinates, String playerId) throws IOException {
+
+        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
+        url.append("setup?").append("game_id=").append(game.getGameId())
+                .append("&user_id=").append(playerId).append("&data=").append(shipyardCoordinates);
+
+        HttpClient client = HttpClientBuilder.create().build();
+
+        HttpGet deployedShips = new HttpGet(url.toString());
+        HttpResponse response = client.execute(deployedShips);
+
+        // currently not needed
+        //utilityService.convertInputStreamToString(response.getEntity().getContent());
+    }
+
+    private String getStatusFromResponse(String response) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject gameStatus = (JSONObject) parser.parse(response);
+        return (String) gameStatus.get("status");
+    }
+
+    public void waitForGameStatusChange(Game game,String status) throws InterruptedException, IOException, ParseException {
+        System.out.println("Waiting for other player");
+        while (!status.equals(getStatusFromResponse(getStatusString(game.getGameId())))) {
+            Thread.sleep(3333);
+            System.out.print(".......");
+        }
+        System.out.println("");
+        System.out.println(getStatusFromResponse(getStatusString(game.getGameId())));
     }
 
     public void printBoard(String[][] board, Game game) {
@@ -124,65 +179,9 @@ public class GameService {
         }
     }
 
-    private String getStatusFromResponse(String response) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject gameStatus = (JSONObject) parser.parse(response);
-        return (String) gameStatus.get("status");
-    }
-
-    //TODO Now its time for ship deployment
-    // create a method which takes a scanner for user input. Then convert user input to coordinates and deploy a ship.
-    // Maybe gather all the inputs and string build them to a URL to deploy all ships at once
-    // @return new Ship ??
-    public Ship deployShip(Game game, Coordinate startCoordinate, int shipSize, char orientation) {
-
-        List<String> columnHeaders = game.getColumns();
-        List<Long> rowHeaders = game.getRows();
-        String[][] board = game.getPlayerBoard();
-        String startCol = startCoordinate.getColumn();
-
-        int startRow = startCoordinate.getRow();
-
-        int columnIndex = columnHeaders.indexOf(startCol);
-        //Horizontal
-        // When ship is horizontal, the row is constant and we iterate trough columns
-        if ('h' == orientation) {
-            for (int i = 0; i < shipSize; i++) {
-                // simplify this equation - columnHeaders.indexOf(startCol)+i
-                //TODO make a seperate method to update board
-                board[startRow][columnIndex + i] = "#";
-                // method should save end coordinate for forging a URL
-                if (i == (shipSize - 1)) {
-//                    System.out.println("End coordinate r = " + startRow + "\nEnd col = " + columnHeaders.get(columnIndex + i));
-                    return new Ship(startCoordinate, new Coordinate(columnHeaders.get(columnIndex + i), startRow));
-                }
-            }
-        }
-        //Vertical
-        // W
-        if ('v' == orientation) {
-            for (int i = 0; i < shipSize; i++) {
-
-                board[startRow + i][columnIndex] = "#";
-                // method should save end coordinate for forging a URL
-                if (i == (shipSize - 1)) {
-//                    System.out.println("End coordinate r = " + (startRow + i) + "\nEnd col = " + columnHeaders.get(columnIndex));
-                    return new Ship(startCoordinate, new Coordinate(columnHeaders.get(columnIndex), (startRow + i)));
-                }
-            }
-        }
-        return null;
-    }
-
-    public void addShipToShipyard(Game game, Ship ship) {
-        List<Ship> shipyard = game.getShipyard();
-        shipyard.add(ship);
-        game.setShipyard(shipyard);
-    }
-
     //TODO create method to update the board
 
-    public String[][] drawShips(Game game, GameService gameService) {
+    public void drawShipsToPlayerBoard(Game game) {
         List<String> columns = game.getColumns();
         String[][] myBoard = game.getPlayerBoard();
         List<Ship> shipyard = game.getShipyard();
@@ -197,30 +196,29 @@ public class GameService {
             // if startCol == endCol ship is vertical
             if (startColumnIndex == endColumnIndex) {
                 int shipSize = endRowIndex - startRowIndex;
-                for(int i =0;i<shipSize;i++){
-                    myBoard[startRowIndex+i][startColumnIndex] = "#";
+                for (int i = 0; i < shipSize+1; i++) {
+                    myBoard[startRowIndex + i][startColumnIndex] = GameStatus.BOAT_HULL_SYMBOL;
 
                 }
-                return myBoard;
+                game.setPlayerBoard(myBoard);
 
             }
-            if (startRowIndex == endRowIndex){
+            if (startRowIndex == endRowIndex) {
                 int shipSize = endColumnIndex - startColumnIndex;
-                for(int i=0;i<shipSize;i++){
-                    myBoard[startRowIndex][startColumnIndex+i] = "#";
+                for (int i = 0; i < shipSize+1; i++) {
+                    myBoard[startRowIndex][startColumnIndex + i] = GameStatus.BOAT_HULL_SYMBOL;
                 }
-                return myBoard;
+                game.setPlayerBoard(myBoard);
             }
 
         }
 
-        return myBoard;
     }
 
-    public String parseShipyardToUrl(Game game, GameService gameService){
+    public String parseShipyardToUrl(Game game) {
         List<Ship> shipyard = game.getShipyard();
         StringBuilder builder = new StringBuilder();
-        for(Ship ship: shipyard){
+        for (Ship ship : shipyard) {
             // Coordinates for URL looks like &data=K0-K3!L1-L3!L5-L7!M2-M3!M5-M6!M8-M9!E7-E7!S9-S9!R8-R8!R5-R5
             String startLetter = ship.getStartCoordinate().getColumn();
             String endLetter = ship.getEndCoordinate().getColumn();
@@ -232,18 +230,85 @@ public class GameService {
         System.out.println(builder);
         return builder.toString();
     }
+    // maybe not the place for thi method
 
-    public String sendShips(Game game, String shipyardCoordinates, String playerId) throws IOException {
-        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
-        url.append("setup?").append("game_id=").append(game.getGameId())
-                .append("&user_id=").append(playerId).append("&data=").append(shipyardCoordinates);
+    // UTILITIES
+    public String validateCoordinateInput(Scanner scanner) {
+        String coordinate;
+        boolean flow = true;
+        while (flow) {
+            coordinate = scanner.nextLine();
+            char firstSymbol = Character.toUpperCase(coordinate.charAt(0));
+            char secondSymbol = coordinate.charAt(1);
+            char thirdSymbol = Character.toLowerCase(coordinate.charAt(2));
 
-        HttpClient client = HttpClientBuilder.create().build();
+            if (coordinate.length() != 3) {
+                System.out.println("Please enter coordinate correctly. Format Column-Row-Orientation.\n" +
+                        " Ex .: A5h translates to A - column; 5 - row; h -horizontal");
+            } else if (!Character.isLetter(firstSymbol)) {
+                System.out.println("First symbol is not a letter");
+            } else if (!Character.isDigit(secondSymbol)) {
+                System.out.println("Second symbol must be a digit!!");
+            } else {
+                switch (thirdSymbol) {
+                    case 'h': {
+                        flow = false;
+                        String result = Character.toString(firstSymbol).toUpperCase() + secondSymbol + thirdSymbol;
+                        System.out.println(result);
+                        return result;
+                    }
+                    case 'v': {
+                        flow = false;
+                        String result = Character.toString(firstSymbol).toUpperCase() + secondSymbol + thirdSymbol;
+                        System.out.println(result);
+                        return result;
+                    }
+                    default: {
+                        System.out.println("Wrong input");
+                        break;
+                    }
+                }
+            }
 
-        HttpGet deployedShips = new HttpGet(url.toString());
-        HttpResponse response = client.execute(deployedShips);
+        }
 
-        return utilityService.convertInputStreamToString(response.getEntity().getContent());
+        return null;
+    }
+
+    public Coordinate convertInputStringToCoordinate(String coordinate) {
+
+        String col = Character.toString(coordinate.charAt(0));
+        int row = Character.getNumericValue(coordinate.charAt(1));
+        return new Coordinate(col, row);
+    }
+
+    public char getOrientationCharFromInputString(String input) {
+        return input.charAt(2);
+    }
+
+
+    //WORKING
+    public List<Event> getEventListFromStatus(String response) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject gameStatus = (JSONObject) parser.parse(response);
+        JSONArray eventArray = (JSONArray) gameStatus.get("events");
+        List<Event> eventList = new ArrayList<>();
+        for (Object o: eventArray){
+//            Event singleEvent = (Event) o;
+            JSONObject eventObject = (JSONObject) o;
+            long date = (long) eventObject.get("date");
+            JSONObject coordinateObject = (JSONObject) eventObject.get("coordinate");
+            String column = (String) coordinateObject.get("column");
+            long row = (Long) coordinateObject.get("row");
+            String userId = (String) eventObject.get("userId");
+            boolean isHit = (boolean) eventObject.get("hit");
+            Coordinate coordinate = new Coordinate(column, (int)row);
+            eventList.add(new Event(coordinate,date,userId,isHit));
+
+        }
+        System.out.println(eventList);
+        return eventList;
+
     }
 
 }

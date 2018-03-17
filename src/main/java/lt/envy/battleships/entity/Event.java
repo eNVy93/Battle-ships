@@ -4,17 +4,13 @@ import java.util.Date;
 
 public class Event {
 
-    //TODO event will hold a Coordinate
-    //TODO event will hold a date with Date class
-    //TODO event will hold a userId;
-    //TODO event will hold a boolean for hit
 
     private Coordinate coordinate;
-    private Date date;
+    private long date;
     private String userId;
     private boolean hit;
 
-    public Event(Coordinate coordinate, Date date, String userId, boolean hit) {
+    public Event(Coordinate coordinate, long date, String userId, boolean hit) {
         this.coordinate = coordinate;
         this.date = date;
         this.userId = userId;
@@ -29,11 +25,11 @@ public class Event {
         this.coordinate = coordinate;
     }
 
-    public Date getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

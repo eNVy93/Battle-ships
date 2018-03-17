@@ -7,16 +7,17 @@ public class Game {
 
     //TODO think of what atributes Game class will have
 
-    //TODO Game should have a Board (either take it from response or hardcode it.
-    //TODO gameId --
-    //TODO status
-    //TODO an array or list of Events
-    //TODO a field for declaring a winner
-    //TODO field for nextPlayersTurn
+    // Game should have a Board (either take it from response or hardcode it.
+    // gameId --
+    // status
+    // an array or list of Events
+    // a field for declaring a winner
+    // field for nextPlayersTurn
 
     //TODO think of what methods this classes' service will hold
-    //TODO methods to join a user to the game
     //TODO method for taking a turn
+
+    public static int[] SHIPYARD_CONFIGURATION = {4,3,3,2,2,2,1,1,1,1};
 
     private String gameId;
     private String status;
@@ -28,7 +29,6 @@ public class Game {
     private String[][] playerBoard;
     private String[][] enemyBoard;
     private List<Ship> shipyard;
-
 
 
     public Game(String gameId, String status, List<Event> listOfEvents, String winnerId, String nextTurnForUserId, List<String> columns, List<Long> rows) {

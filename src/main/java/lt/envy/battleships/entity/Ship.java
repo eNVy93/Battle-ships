@@ -1,7 +1,8 @@
 package lt.envy.battleships.entity;
 
-public class Ship {
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
+public class Ship {
     private Coordinate startCoordinate;
     private Coordinate endCoordinate;
 
