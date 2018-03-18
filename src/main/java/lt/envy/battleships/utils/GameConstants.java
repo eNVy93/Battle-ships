@@ -1,6 +1,6 @@
 package lt.envy.battleships.utils;
 
-public class GameStatus {
+public class GameConstants {
 
 
     //TODO implement all possible game statuses

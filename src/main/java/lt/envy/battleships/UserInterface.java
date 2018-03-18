@@ -1,11 +1,10 @@
 package lt.envy.battleships;
 
-import lt.envy.battleships.entity.Coordinate;
-import lt.envy.battleships.entity.Game;
-import lt.envy.battleships.entity.Ship;
-import lt.envy.battleships.entity.User;
+import lt.envy.battleships.entity.*;
 import lt.envy.battleships.service.GameService;
 import lt.envy.battleships.service.UserService;
+import lt.envy.battleships.utils.GameConstants;
+import lt.envy.battleships.utils.GameUtilityService;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -15,6 +14,8 @@ import java.util.Scanner;
 
 public class UserInterface {
     //TODO use StringBuilder for strings !!!!!
+    private GameUtilityService utilityService = new GameUtilityService();
+
     public void printGreeting() {
         System.out.println("**************" +
                 "\nWelcome to the best battleship app.\n" +
@@ -56,6 +57,7 @@ public class UserInterface {
 
         return game;
     }
+
     // For manual ship deployment
     public void setupShipyard(Scanner scanner, Game game, GameService gameService) {
         System.out.println("It's time to set up your battlefield!");
@@ -67,91 +69,99 @@ public class UserInterface {
         for (int i = 0; i < Game.SHIPYARD_CONFIGURATION.length; i++) {
             System.out.println("Deploy ship. Size: " + Game.SHIPYARD_CONFIGURATION[i]);
             System.out.println("Enter the starting coordinate. For example: L4v");
-            String shipCoordinateString = gameService.validateCoordinateInput(scanner);
-            Coordinate shipCoordinate = gameService.convertInputStringToCoordinate(shipCoordinateString);
-            char orientationCharacter = gameService.getOrientationCharFromInputString(shipCoordinateString);
-            Ship ship =gameService.deployShip(game, shipCoordinate, Game.SHIPYARD_CONFIGURATION[i],orientationCharacter);
-            gameService.addShipToShipyard(game,ship);
+            String shipCoordinateString = utilityService.validateCoordinateInput(scanner);
+            Coordinate shipCoordinate = utilityService.convertInputStringToCoordinate(shipCoordinateString);
+            char orientationCharacter = utilityService.getOrientationCharFromInputString(shipCoordinateString);
+            Ship ship = gameService.generateShip(game, shipCoordinate, Game.SHIPYARD_CONFIGURATION[i], orientationCharacter);
+            gameService.addShipToShipyard(game, ship);
         }
     }
 
-    public void generateEmptyBoards(Game game, GameService gameService){
-        String[][] enemyBoard = gameService.generateBoard();
-        String[][] myBoard = gameService.generateBoard();
+    public void generatePlayerBoards(Game game) {
+        String[][] enemyBoard = generateEmptyBoard();
+        String[][] myBoard = generateEmptyBoard();
         game.setPlayerBoard(myBoard);
         game.setEnemyBoard(enemyBoard);
     }
 
-    // method initialises after player, game and ships are set up
-    public void drawGameBoard(Game game,GameService gameService){
+    private String[][] generateEmptyBoard() {
+        Board board = new Board(new String[10][10]);
+        String[][] arena = board.getBoard();
+        for (int i = 0; i < arena.length; i++) {
+            for (int j = 0; j < arena[i].length; j++) {
+                arena[i][j] = GameConstants.WATER_SYMBOL;
+            }
+        }
+        return arena;
+    }
+
+
+    private void printBoard(String[][] board, Game game) {
+        List<String> columns = game.getColumns();
+        List<Long> rows = game.getRows();
+
+        System.out.printf("%-3s", " ");
+        for (String s : columns) {
+            System.out.printf("%-3s", s);
+        }
+        System.out.println("");
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (j == 0) {
+                    System.out.printf("%-3s", rows.get(i));
+                }
+                System.out.printf("%-3s", board[i][j]);
+            }
+
+            System.out.println("");
+        }
+    }
+
+    public void drawGameBoard(Game game) {
         String[][] enemyBoard = game.getEnemyBoard();
-        gameService.drawShipsToPlayerBoard(game);
+        drawShipsToPlayerBoard(game);
         String[][] playerBoard = game.getPlayerBoard();
         System.out.println(".......ENEMY_BOARD......................");
-        gameService.printBoard(enemyBoard,game);
+        printBoard(enemyBoard, game);
         System.out.println(".......PLAYER_BOARD.....................");
-        gameService.printBoard(playerBoard,game);
+        printBoard(playerBoard, game);
     }
 
     // for automatic ship deployment
-    public void shipLoader(Game game, GameService gameService) {
-        List<String> cols = new ArrayList<>();
-        {
-            cols.add("K");
-            cols.add("I");
-            cols.add("L");
-            cols.add("O");
-            cols.add("M");
-            cols.add("E");
-            cols.add("T");
-            cols.add("R");
-            cols.add("A");
-            cols.add("S");
+    public void drawShipsToPlayerBoard(Game game) {
+        List<String> columns = game.getColumns();
+        String[][] myBoard = game.getPlayerBoard();
+        List<Ship> shipyard = game.getShipyard();
+
+        for (Ship ship : shipyard) {
+            int startColumnIndex = columns.indexOf(ship.getStartCoordinate().getColumn());
+            int endColumnIndex = columns.indexOf(ship.getEndCoordinate().getColumn());
+            int startRowIndex = ship.getStartCoordinate().getRow();
+            int endRowIndex = ship.getEndCoordinate().getRow();
+
+            //Check ships orientation
+            // if startCol == endCol ship is vertical
+            if (startColumnIndex == endColumnIndex) {
+                int shipSize = endRowIndex - startRowIndex;
+                for (int i = 0; i < shipSize + 1; i++) {
+                    myBoard[startRowIndex + i][startColumnIndex] = GameConstants.BOAT_HULL_SYMBOL;
+
+                }
+                game.setPlayerBoard(myBoard);
+
+            }
+            if (startRowIndex == endRowIndex) {
+                int shipSize = endColumnIndex - startColumnIndex;
+                for (int i = 0; i < shipSize + 1; i++) {
+                    myBoard[startRowIndex][startColumnIndex + i] = GameConstants.BOAT_HULL_SYMBOL;
+                }
+                game.setPlayerBoard(myBoard);
+            }
+
         }
-        List<Long> rows = new ArrayList<>();
-        {
-            rows.add(0L);
-            rows.add(1L);
-            rows.add(2L);
-            rows.add(3L);
-            rows.add(4L);
-            rows.add(5L);
-            rows.add(6L);
-            rows.add(7L);
-            rows.add(8L);
-            rows.add(9L);
-        }
-
-        Ship carrier = gameService.deployShip(game, new Coordinate("L", 8), 4, 'h');
-        gameService.addShipToShipyard(game, carrier);
-
-        Ship battleCruiser = gameService.deployShip(game, new Coordinate("I", 4), 3, 'v');
-        gameService.addShipToShipyard(game, battleCruiser);
-
-        Ship battleCruiser2 = gameService.deployShip(game, new Coordinate("R", 1), 3, 'v');
-        gameService.addShipToShipyard(game, battleCruiser2);
-
-        Ship cruiser = gameService.deployShip(game, new Coordinate("I", 1), 2, 'h');
-        gameService.addShipToShipyard(game, cruiser);
-
-        Ship cruiser2 = gameService.deployShip(game, new Coordinate("E", 3), 2, 'v');
-        gameService.addShipToShipyard(game, cruiser2);
-
-        Ship cruiser3 = gameService.deployShip(game, new Coordinate("R", 6), 2, 'h');
-        gameService.addShipToShipyard(game, cruiser3);
-
-        Ship boat = gameService.deployShip(game, new Coordinate("O", 3), 1, 'h');
-        gameService.addShipToShipyard(game, boat);
-
-        Ship boat1 = gameService.deployShip(game, new Coordinate("O", 5), 1, 'h');
-        gameService.addShipToShipyard(game, boat1);
-
-        Ship boat2 = gameService.deployShip(game, new Coordinate("K", 9), 1, 'h');
-        gameService.addShipToShipyard(game, boat2);
-
-        Ship boat3 = gameService.deployShip(game, new Coordinate("A", 8), 1, 'h');
-        gameService.addShipToShipyard(game, boat3);
-
 
     }
+
+
 }

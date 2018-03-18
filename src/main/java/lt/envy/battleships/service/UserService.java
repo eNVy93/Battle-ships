@@ -1,7 +1,7 @@
 package lt.envy.battleships.service;
 
 import lt.envy.battleships.entity.User;
-import lt.envy.battleships.utils.MyUtilityService;
+import lt.envy.battleships.utils.GameUtilityService;
 import lt.envy.battleships.utils.URLConstants;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class UserService {
 
-    private MyUtilityService utilityService = new MyUtilityService();
+    private GameUtilityService utilityService = new GameUtilityService();
 
     public User createUser(String name, String email) throws IOException, ParseException {
 
