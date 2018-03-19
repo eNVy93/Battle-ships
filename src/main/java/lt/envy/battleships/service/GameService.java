@@ -158,7 +158,12 @@ public class GameService {
 
             if (GameConstants.FINISHED.equals(utilityService.getStatusFromResponse(statusResponse))) {
                 System.out.println("WE HAVE A WINNER");
-                System.out.println(utilityService.getWinnerId(statusResponse));
+                System.out.println("UserId: " + winnerId);
+                if (user.getUserId().equals(winnerId)) {
+                    System.out.println("YOU WIN!!!");
+                } else {
+                    System.out.println("ENEMY WINS!!!");
+                }
                 break;
             }
 
