@@ -48,4 +48,12 @@ public class Event {
     public void setHit(boolean hit) {
         this.hit = hit;
     }
+
+    @Override
+    public String toString() {
+        return "Date: " + date +"\n"+
+                "User: " + userId +"\n" +
+                "Coordinate " + coordinate.getColumn() + coordinate.getRow() +"\n" +
+                "Hit : " + hit;
+    }
 }

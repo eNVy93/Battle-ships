@@ -34,16 +34,20 @@ public class App {
         //5.Generate empty boards
         ui.generatePlayerBoards(game);
         //6. loads ships automatically
-        utilityService.shipLoader(game,gameService);
-        //7. Draw enemy and player boards
-        ui.drawGameBoard(game);
+        // should return a list, without gameservice interaction
+        utilityService.shipLoader(game);
+//        //7. Draw enemy and player boards
+//        ui.drawGameBoard(game);
+        ui.setShipsToPlayerBoard(game);
         //8. Send shipyard data to server
         String shipCoordinates = utilityService.parseShipyardToUrl(game);
         gameService.sendShips(game,shipCoordinates,user.getUserId());
         //8.Check for status change.
         utilityService.waitForGameStatusChange(game, GameConstants.READY_TO_PLAY);
 
-        utilityService.getEventListFromStatus(utilityService.getStatusString(game.getGameId()));
+        utilityService.setGameEventListFromStatus(utilityService.getStatusString(game.getGameId()),game);
+
+        gameService.play(game,user,scanner);
 
         scanner.close();
 

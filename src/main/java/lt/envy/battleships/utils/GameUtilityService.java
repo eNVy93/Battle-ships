@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameUtilityService {
+    static GameService gameService = new GameService();
 
     public String convertInputStreamToString(InputStream inputStream) throws IOException {
         StringWriter writer = new StringWriter();
@@ -83,33 +84,7 @@ public class GameUtilityService {
         return input.charAt(2);
     }
 
-    public Game convertJsonToGame(String response) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonGame = (JSONObject) parser.parse(response);
 
-        JSONArray JSONevents = (JSONArray) jsonGame.get("events");
-        List<Event> eventList = new ArrayList<>();
-        for (Object o : JSONevents) {
-            eventList.add((Event) o);
-        }
-        JSONArray JSONcolumns = (JSONArray) jsonGame.get("columns");
-        List<String> columns = new ArrayList<>();
-        for (Object o : JSONcolumns) {
-            columns.add((String) o);
-        }
-        JSONArray JSONrows = (JSONArray) jsonGame.get("rows");
-        List<Long> rows = new ArrayList<>();
-        for (Object o : JSONrows) {
-            rows.add((Long) o);
-        }
-        String gameId = (String) jsonGame.get("id");
-        String nextTurnForUserId = (String) jsonGame.get("nextTurnForUserId");
-        String status = (String) jsonGame.get("status");
-        String winnerUserId = (String) jsonGame.get("winnerUserId");
-
-        return new Game(gameId, status, eventList, winnerUserId, nextTurnForUserId, columns, rows);
-
-    }
 
     public String parseShipyardToUrl(Game game) {
         List<Ship> shipyard = game.getShipyard();
@@ -127,7 +102,7 @@ public class GameUtilityService {
         return builder.toString();
     }
 
-    private String getStatusFromResponse(String response) throws ParseException {
+    public String getStatusFromResponse(String response) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject gameStatus = (JSONObject) parser.parse(response);
         return (String) gameStatus.get("status");
@@ -156,7 +131,7 @@ public class GameUtilityService {
 
     }
 
-    public List<Event> getEventListFromStatus(String response) throws ParseException {
+    public List<Event> setGameEventListFromStatus(String response, Game game) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject gameStatus = (JSONObject) parser.parse(response);
         JSONArray eventArray = (JSONArray) gameStatus.get("events");
@@ -165,21 +140,55 @@ public class GameUtilityService {
 //            Event singleEvent = (Event) o;
             JSONObject eventObject = (JSONObject) o;
             long date = (long) eventObject.get("date");
+            String userId = (String) eventObject.get("userId");
+            boolean isHit = (boolean) eventObject.get("hit");
+
             JSONObject coordinateObject = (JSONObject) eventObject.get("coordinate");
             String column = (String) coordinateObject.get("column");
             long row = (Long) coordinateObject.get("row");
-            String userId = (String) eventObject.get("userId");
-            boolean isHit = (boolean) eventObject.get("hit");
+
             Coordinate coordinate = new Coordinate(column, (int) row);
             eventList.add(new Event(coordinate, date, userId, isHit));
 
         }
-        System.out.println(eventList);
+        game.setListOfEvents(eventList);
         return eventList;
 
     }
 
-    public void shipLoader(Game game, GameService gameService) {
+    public String getNextPlayersTurnFromStatus(String response) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject gameStatus = (JSONObject) parser.parse(response);
+        return (String) gameStatus.get("nextTurnForUserId");
+    }
+
+    public String getWinnerId(String response) throws ParseException {
+
+        JSONParser parser = new JSONParser();
+        JSONObject gameStatus = (JSONObject) parser.parse(response);
+
+        return (String) gameStatus.get("winnerUserId");
+
+    }
+
+    public void shotHistory(Game game) throws ParseException, IOException {
+        String statusResponse = getStatusString(game.getGameId());
+
+        List<Event> eventList = setGameEventListFromStatus(statusResponse, game);
+        List<Event> lastThreeEvents = eventList.subList(Math.max(eventList.size() - 3, 0), eventList.size());
+        if(lastThreeEvents.size()==0){
+
+        }
+        System.out.println("...SHOT HISTORY. LAST 3 SHOTS...");
+        for (Event e :
+                lastThreeEvents) {
+            System.out.println("\n" + e);
+        }
+        System.out.println("..................................");
+
+    }
+// shouldnt take Game parameter. Return a list
+    public void shipLoader(Game game) {
         List<String> cols = new ArrayList<>();
         {
             cols.add("K");

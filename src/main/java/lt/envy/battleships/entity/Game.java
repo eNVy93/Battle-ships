@@ -26,6 +26,7 @@ public class Game {
     private String nextTurnForUserId;
     private List<String> columns;
     private List<Long> rows;
+    // iskelti i APP ar kazkur
     private String[][] playerBoard;
     private String[][] enemyBoard;
     private List<Ship> shipyard;

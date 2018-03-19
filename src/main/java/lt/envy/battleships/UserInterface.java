@@ -8,7 +8,6 @@ import lt.envy.battleships.utils.GameUtilityService;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -120,16 +119,18 @@ public class UserInterface {
 
     public void drawGameBoard(Game game) {
         String[][] enemyBoard = game.getEnemyBoard();
-        drawShipsToPlayerBoard(game);
         String[][] playerBoard = game.getPlayerBoard();
-        System.out.println(".......ENEMY_BOARD......................");
-        printBoard(enemyBoard, game);
         System.out.println(".......PLAYER_BOARD.....................");
         printBoard(playerBoard, game);
+        System.out.println(".......ENEMY_BOARD......................");
+        printBoard(enemyBoard, game);
     }
 
+    public void drawEvents(){
+
+    }
     // for automatic ship deployment
-    public void drawShipsToPlayerBoard(Game game) {
+    public void setShipsToPlayerBoard(Game game) {
         List<String> columns = game.getColumns();
         String[][] myBoard = game.getPlayerBoard();
         List<Ship> shipyard = game.getShipyard();
