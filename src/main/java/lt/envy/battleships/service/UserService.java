@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
-public class UserService {
+public class UserService extends WebService{
 
     private GameUtilityService utilityService = new GameUtilityService();
 

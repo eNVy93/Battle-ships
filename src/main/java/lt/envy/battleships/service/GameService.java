@@ -1,10 +1,8 @@
 package lt.envy.battleships.service;
 
-
-import lt.envy.battleships.UserInterface;
-import lt.envy.battleships.entity.*;
-import lt.envy.battleships.utils.GameConstants;
-import lt.envy.battleships.utils.GameUtilityService;
+import lt.envy.battleships.entity.Coordinate;
+import lt.envy.battleships.entity.Event;
+import lt.envy.battleships.entity.GameData;
 import lt.envy.battleships.utils.URLConstants;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -18,37 +16,89 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class GameService {
+public class GameService extends WebService {
+
+    public static final String CREATE_USER_METHOD = "create_user?";
+    public static final String JOIN_USER_METHOD = "join?";
+    public static final String SETUP_GAME_METHOD = "setup?";
+    public static final String GAME_STATUS_METHOD = "status?";
+    public static final String GAME_TURN_METHOD = "turn?";
+
+    public GameData join(String userId) throws IOException, ParseException {
+
+        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
+        url.append(URLConstants.JOIN_USER_METHOD).append("user_id=").append(userId);
+
+        return performRequest(url.toString());
+    }
+
+    public GameData setup(String gameId, String playerId, String shipyardCoordinates) throws IOException, ParseException {
+        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
+        url.append("setup?").append("game_id=").append(gameId)
+                .append("&user_id=").append(playerId).append("&data=").append(shipyardCoordinates);
 
 
-    private GameUtilityService utilityService = new GameUtilityService();
-
-    public Game joinUser(String userId) throws IOException, ParseException {
-
-        StringBuilder joinUserURL = new StringBuilder(URLConstants.SERVER_URL);
-        joinUserURL.append(URLConstants.JOIN_USER_METHOD).append("user_id=").append(userId);
-
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet getRequest = new HttpGet(joinUserURL.toString());
-
-        HttpResponse joinUserResponse = httpClient.execute(getRequest);
-
-        String joinUserResponseString = utilityService.convertInputStreamToString(joinUserResponse.getEntity().getContent());
-
-        return convertJsonToGame(joinUserResponseString);
+        return performRequest(url.toString());
 
     }
 
-    public Game convertJsonToGame(String response) throws ParseException {
+    public GameData status(String gameId) throws IOException, ParseException {
+        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
+        url.append(URLConstants.GAME_STATUS_METHOD).append("game_id=").append(gameId);
+
+
+        return performRequest(url.toString());
+
+    }
+
+    public GameData turn(String gameId, String userId, String target) throws IOException, ParseException {
+
+        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
+        url.append("turn?").append("game_id=").append(gameId)
+                .append("&user_id=").append(userId).append("&data=").append(target);
+
+
+        return performRequest(url.toString());
+
+    }
+
+
+    public GameData performRequest(String url) throws IOException, ParseException {
+
+
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpGet getRequest = new HttpGet(url);
+
+        HttpResponse response = httpClient.execute(getRequest);
+        String responseString = convertInputStreamToString(response.getEntity().getContent());
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return convertJsonToGameData(responseString);
+
+        }
+        return null;
+
+
+    }
+
+    public GameData convertJsonToGameData(String responseBody) throws ParseException {
+
         JSONParser parser = new JSONParser();
-        JSONObject jsonGame = (JSONObject) parser.parse(response);
+        JSONObject jsonGame = (JSONObject) parser.parse(responseBody);
 
         JSONArray JSONevents = (JSONArray) jsonGame.get("events");
         List<Event> eventList = new ArrayList<>();
         for (Object o : JSONevents) {
-            eventList.add((Event) o);
+            JSONObject eventObj = (JSONObject) o;
+            JSONObject coordinateObj = (JSONObject) eventObj.get("coordinate");
+
+            String column = (String) coordinateObj.get("column");
+            long row = (long) coordinateObj.get("row");
+
+            long date = (long) eventObj.get("date");
+            String userId = (String) eventObj.get("userId");
+            boolean hit = (boolean) eventObj.get("hit");
+            eventList.add(new Event(new Coordinate(column, (int) row), date, userId, hit));
         }
         JSONArray JSONcolumns = (JSONArray) jsonGame.get("columns");
         List<String> columns = new ArrayList<>();
@@ -65,40 +115,7 @@ public class GameService {
         String status = (String) jsonGame.get("status");
         String winnerUserId = (String) jsonGame.get("winnerUserId");
 
-        return new Game(gameId, status, eventList, winnerUserId, nextTurnForUserId, columns, rows);
+        return new GameData(gameId, status, eventList, winnerUserId, nextTurnForUserId, columns, rows);
 
     }
-
-    public String sendShips(Game game, String shipyardCoordinates, String playerId) throws IOException {
-
-        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
-        url.append("setup?").append("game_id=").append(game.getGameId())
-                .append("&user_id=").append(playerId).append("&data=").append(shipyardCoordinates);
-
-        HttpClient client = HttpClientBuilder.create().build();
-
-        HttpGet deployedShips = new HttpGet(url.toString());
-        HttpResponse response = client.execute(deployedShips);
-
-        return utilityService.convertInputStreamToString(response.getEntity().getContent());
-    }
-
-    public String shoot(Game game, User user, String target) throws IOException, ParseException {
-
-        String statusResponse = utilityService.getStatusString(game.getGameId());
-        utilityService.setGameEventListFromStatus(statusResponse, game);
-        StringBuilder sb = new StringBuilder(URLConstants.SERVER_URL);
-        sb.append("turn?").append("game_id=").append(game.getGameId())
-                .append("&user_id=").append(user.getUserId()).append("&data=").append(target);
-
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpGet shotRequest = new HttpGet(sb.toString());
-        HttpResponse response = client.execute(shotRequest);
-        utilityService.setGameEventListFromStatus(statusResponse, game);
-
-        return utilityService.convertInputStreamToString(response.getEntity().getContent());
-
-    }
-
-
 }

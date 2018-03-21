@@ -4,12 +4,10 @@ import lt.envy.battleships.entity.*;
 import lt.envy.battleships.service.GameLogicService;
 import lt.envy.battleships.service.GameService;
 import lt.envy.battleships.service.UserService;
-import lt.envy.battleships.utils.GameConstants;
 import lt.envy.battleships.utils.GameUtilityService;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -48,16 +46,16 @@ public class UserInterface {
     }
     //STAY
     // Joins user to the game. Initialises new Game object.
-    public Game initialiseGame(User user, GameService gameService) throws IOException, ParseException, InterruptedException {
+    public GameData initialiseGame(User user, GameService gameService) throws IOException, ParseException, InterruptedException {
 
         System.out.println("User : " + user.getName() + "\n" +
                 "Id : " + user.getUserId() + "\nConnected");
-        Game game = gameService.joinUser(user.getUserId());
+        GameData gamedata = gameService.join(user.getUserId());
 
-        System.out.println("Game id: " + game.getGameId());
-        System.out.println(game.getStatus());
+        System.out.println("Game id: " + gamedata.getGameId());
+        System.out.println(gamedata.getStatus());
 
-        return game;
+        return gamedata;
     }
     //STAY for now
     // For manual ship deployment

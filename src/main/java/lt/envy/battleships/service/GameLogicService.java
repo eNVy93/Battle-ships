@@ -15,7 +15,7 @@ public class GameLogicService {
     GameUtilityService utilityService = new GameUtilityService();
 
     //OUT
-    public Ship generateShip(Game game, Coordinate startCoordinate, int shipSize, char orientation) {
+    public Ship generateShip(GameData game, Coordinate startCoordinate, int shipSize, char orientation) {
 
         List<String> columnHeaders = game.getColumns();
         List<Long> rowHeaders = game.getRows();
@@ -45,10 +45,8 @@ public class GameLogicService {
     }
 
     //OUT
-    public void addShipToShipyard(Game game, Ship ship) {
-        List<Ship> shipyard = game.getShipyard();
+    public void addShipToShipyard(List<Ship> shipyard, Ship ship) {
         shipyard.add(ship);
-        game.setShipyard(shipyard);
     }
 
     //out
@@ -60,7 +58,7 @@ public class GameLogicService {
     }
 
     //out
-    private String[][] generateEmptyBoard() {
+    public String[][] generateEmptyBoard() {
         Board board = new Board(new String[10][10]);
         String[][] arena = board.getBoard();
         for (int i = 0; i < arena.length; i++) {
@@ -72,7 +70,7 @@ public class GameLogicService {
     }
 
     //out?
-    private void printBoard(String[][] board, Game game) {
+    private void printBoard(String[][] board, GameData game) {
         List<String> columns = game.getColumns();
         List<Long> rows = game.getRows();
 
@@ -95,9 +93,7 @@ public class GameLogicService {
     }
 
     //Out
-    public void drawGameBoard(Game game) {
-        String[][] enemyBoard = game.getEnemyBoard();
-        String[][] playerBoard = game.getPlayerBoard();
+    public void drawGameBoard(GameData game,String[][] playerBoard, String[][] enemyBoard) {
         System.out.println(".......PLAYER_BOARD.....................");
         printBoard(playerBoard, game);
         System.out.println(".......ENEMY_BOARD......................");
