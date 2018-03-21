@@ -2,13 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fec330d9-b2aa-44c7-b038-314ea27ac927" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/LogicService.java" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java" afterPath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java" />
       <change beforePath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/UserInterface.java" afterPath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/UserInterface.java" />
       <change beforePath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameLogicService.java" afterPath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameLogicService.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameService.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/UserService.java" afterPath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/UserService.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/GameUtilityService.java" afterPath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/GameUtilityService.java" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/URLConstants.java" afterPath="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/URLConstants.java" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lt/envy/battleships/App.class" afterPath="$PROJECT_DIR$/target/classes/lt/envy/battleships/App.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lt/envy/battleships/UserInterface.class" afterPath="$PROJECT_DIR$/target/classes/lt/envy/battleships/UserInterface.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lt/envy/battleships/service/GameLogicService.class" afterPath="$PROJECT_DIR$/target/classes/lt/envy/battleships/service/GameLogicService.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lt/envy/battleships/service/GameService.class" afterPath="$PROJECT_DIR$/target/classes/lt/envy/battleships/service/GameService.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lt/envy/battleships/service/UserService.class" afterPath="$PROJECT_DIR$/target/classes/lt/envy/battleships/service/UserService.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lt/envy/battleships/utils/GameUtilityService.class" afterPath="$PROJECT_DIR$/target/classes/lt/envy/battleships/utils/GameUtilityService.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lt/envy/battleships/utils/URLConstants.class" afterPath="$PROJECT_DIR$/target/classes/lt/envy/battleships/utils/URLConstants.class" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -26,18 +32,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="GameLogicService.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GameLogicService.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameLogicService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="567">
-              <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+            <state relative-caret-position="202">
+              <caret line="131" column="22" lean-forward="false" selection-start-line="131" selection-start-column="22" selection-end-line="131" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1677#1678#0" expanded="true" />
-                <element signature="e#1711#1712#0" expanded="true" />
-                <marker date="1521669689365" expanded="true" signature="7109:8318" ph="..." />
-                <marker date="1521669689365" expanded="true" signature="9167:9387" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LogicService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/LogicService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="84">
+              <caret line="4" column="62" lean-forward="false" selection-start-line="4" selection-start-column="62" selection-end-line="4" selection-end-column="62" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -57,8 +69,8 @@
       <file leaf-file-name="UserInterface.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/UserInterface.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
-              <caret line="55" column="49" lean-forward="true" selection-start-line="55" selection-start-column="49" selection-end-line="55" selection-end-column="49" />
+            <state relative-caret-position="506">
+              <caret line="77" column="7" lean-forward="true" selection-start-line="61" selection-start-column="6" selection-end-line="77" selection-end-column="7" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -66,49 +78,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameData.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/entity/GameData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="24" column="31" lean-forward="false" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
-              <folding>
-                <element signature="e#781#782#0" expanded="true" />
-                <element signature="e#825#826#0" expanded="true" />
-                <element signature="e#861#862#0" expanded="true" />
-                <element signature="e#894#895#0" expanded="true" />
-                <element signature="e#923#924#0" expanded="true" />
-                <element signature="e#967#968#0" expanded="true" />
-                <element signature="e#1003#1004#0" expanded="true" />
-                <element signature="e#1047#1048#0" expanded="true" />
-                <element signature="e#1082#1083#0" expanded="true" />
-                <element signature="e#1143#1144#0" expanded="true" />
-                <element signature="e#1191#1192#0" expanded="true" />
-                <element signature="e#1226#1227#0" expanded="true" />
-                <element signature="e#1257#1258#0" expanded="true" />
-                <element signature="e#1305#1306#0" expanded="true" />
-                <element signature="e#1345#1346#0" expanded="true" />
-                <element signature="e#1389#1390#0" expanded="true" />
-                <element signature="e#1429#1430#0" expanded="true" />
-                <element signature="e#1495#1496#0" expanded="true" />
-                <element signature="e#1553#1554#0" expanded="true" />
-                <element signature="e#1593#1594#0" expanded="true" />
-                <element signature="e#1623#1624#0" expanded="true" />
-                <element signature="e#1675#1676#0" expanded="true" />
-                <element signature="e#1713#1714#0" expanded="true" />
-                <element signature="e#1748#1749#0" expanded="true" />
-                <element signature="e#1775#1776#0" expanded="true" />
-                <element signature="e#1819#1820#0" expanded="true" />
-                <element signature="e#1851#1852#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GameUtilityService.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GameUtilityService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/GameUtilityService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
+            <state relative-caret-position="203">
+              <caret line="249" column="34" lean-forward="true" selection-start-line="249" selection-start-column="34" selection-end-line="249" selection-end-column="34" />
               <folding>
                 <marker date="1521669689461" expanded="false" signature="7702:8355" ph="..." />
               </folding>
@@ -119,8 +93,8 @@
       <file leaf-file-name="App.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="46" column="31" lean-forward="true" selection-start-line="46" selection-start-column="31" selection-end-line="46" selection-end-column="31" />
+            <state relative-caret-position="271">
+              <caret line="49" column="45" lean-forward="false" selection-start-line="49" selection-start-column="45" selection-end-line="49" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -172,16 +146,17 @@
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/entity/Event.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/entity/Game.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/GameConstants.java" />
-        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/URLConstants.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/entity/WebService.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/UserService.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/entity/GameData.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GService.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/UserInterface.java" />
-        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameLogicService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java" />
         <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/GameUtilityService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/UserInterface.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/URLConstants.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/LogicService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameLogicService.java" />
       </list>
     </option>
   </component>
@@ -478,26 +453,26 @@
       <workItem from="1521461264913" duration="8287000" />
       <workItem from="1521531165714" duration="15173000" />
       <workItem from="1521620837932" duration="22691000" />
-      <workItem from="1521662033321" duration="6952000" />
+      <workItem from="1521662033321" duration="8417000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="166326000" />
+    <option name="totallyTimeSpent" value="167791000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295325" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2622577" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18928164" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16305587" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -508,12 +483,11 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5039909" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3854048" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295325" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32975295" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.61117446" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -557,7 +531,21 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="104" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java</url>
+          <line>53</line>
+          <properties />
+          <option name="timeStamp" value="105" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java</url>
+          <line>42</line>
+          <properties />
+          <option name="timeStamp" value="106" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="107" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -565,6 +553,7 @@
         <watch expression="nextPlayerId" language="JAVA" />
         <watch expression="!nextPlayerId.equals(user.getUserId())" language="JAVA" />
         <watch expression="utilityService.getStatusFromResponse(statusResponse);" language="JAVA" />
+        <watch expression="gameService.status(game.getGameId()).getStatus()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
@@ -583,6 +572,11 @@
       </expression>
     </expressions>
     <expressions id="watch">
+      <expression>
+        <expression-string>gameService.status(game.getGameId()).getStatus()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>utilityService.getStatusFromResponse(statusResponse);</expression-string>
         <language-id>JAVA</language-id>
@@ -628,13 +622,18 @@
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
+    </expressions>
+    <expressions id="evaluateExpression">
       <expression>
-        <expression-string>utilityService.setGameEventListFromStatus(statusResponse,game).size()!=0</expression-string>
+        <expression-string>utilityService.shipLoader(shipyard, joinGameData)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-    </expressions>
-    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>gameService.status(game.getGameId()).getStatus();</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>utilityService.getNextPlayersTurnFromStatus(statusResponse)</expression-string>
         <language-id>JAVA</language-id>
@@ -653,14 +652,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/entity/Event.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
@@ -1022,14 +1013,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/URLConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="10" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/entity/Event.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
@@ -1060,8 +1043,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/UserInterface.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="55" column="49" lean-forward="true" selection-start-line="55" selection-start-column="49" selection-end-line="55" selection-end-column="49" />
+        <state relative-caret-position="506">
+          <caret line="77" column="7" lean-forward="true" selection-start-line="61" selection-start-column="6" selection-end-line="77" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/URLConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="67" lean-forward="true" selection-start-line="6" selection-start-column="67" selection-end-line="6" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/LogicService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="4" column="62" lean-forward="false" selection-start-line="4" selection-start-column="62" selection-end-line="4" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/GameUtilityService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="249" column="34" lean-forward="true" selection-start-line="249" selection-start-column="34" selection-end-line="249" selection-end-column="34" />
+          <folding>
+            <marker date="1521669689461" expanded="false" signature="7702:8355" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="49" column="45" lean-forward="false" selection-start-line="49" selection-start-column="45" selection-end-line="49" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1070,34 +1089,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/service/GameLogicService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        <state relative-caret-position="202">
+          <caret line="131" column="22" lean-forward="false" selection-start-line="131" selection-start-column="22" selection-end-line="131" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1677#1678#0" expanded="true" />
-            <element signature="e#1711#1712#0" expanded="true" />
-            <marker date="1521669689365" expanded="true" signature="7109:8318" ph="..." />
-            <marker date="1521669689365" expanded="true" signature="9167:9387" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/App.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="46" column="31" lean-forward="true" selection-start-line="46" selection-start-column="31" selection-end-line="46" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lt/envy/battleships/utils/GameUtilityService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
-          <folding>
-            <marker date="1521669689461" expanded="false" signature="7702:8355" ph="..." />
           </folding>
         </state>
       </provider>

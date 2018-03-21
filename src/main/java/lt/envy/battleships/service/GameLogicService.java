@@ -1,14 +1,11 @@
 package lt.envy.battleships.service;
 
-import lt.envy.battleships.UserInterface;
 import lt.envy.battleships.entity.*;
 import lt.envy.battleships.utils.GameConstants;
 import lt.envy.battleships.utils.GameUtilityService;
 import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 public class GameLogicService {
     GameService gameService = new GameService();
@@ -45,8 +42,9 @@ public class GameLogicService {
     }
 
     //OUT
-    public void addShipToShipyard(List<Ship> shipyard, Ship ship) {
+    public List<Ship> addShipToShipyard(List<Ship> shipyard, Ship ship) {
         shipyard.add(ship);
+        return shipyard;
     }
 
     //out
@@ -93,7 +91,7 @@ public class GameLogicService {
     }
 
     //Out
-    public void drawGameBoard(GameData game,String[][] playerBoard, String[][] enemyBoard) {
+    public void drawGameBoard(GameData game, String[][] playerBoard, String[][] enemyBoard) {
         System.out.println(".......PLAYER_BOARD.....................");
         printBoard(playerBoard, game);
         System.out.println(".......ENEMY_BOARD......................");
@@ -102,10 +100,8 @@ public class GameLogicService {
 
     //OUT
     // for automatic ship deployment
-    public void setShipsToPlayerBoard(Game game) {
+    public String[][] setShipsToPlayerBoard(String[][] myBoard, List<Ship> shipyard, GameData game) {
         List<String> columns = game.getColumns();
-        String[][] myBoard = game.getPlayerBoard();
-        List<Ship> shipyard = game.getShipyard();
 
         for (Ship ship : shipyard) {
             int startColumnIndex = columns.indexOf(ship.getStartCoordinate().getColumn());
@@ -121,7 +117,7 @@ public class GameLogicService {
                     myBoard[startRowIndex + i][startColumnIndex] = GameConstants.BOAT_HULL_SYMBOL;
 
                 }
-                game.setPlayerBoard(myBoard);
+
 
             }
             if (startRowIndex == endRowIndex) {
@@ -129,11 +125,11 @@ public class GameLogicService {
                 for (int i = 0; i < shipSize + 1; i++) {
                     myBoard[startRowIndex][startColumnIndex + i] = GameConstants.BOAT_HULL_SYMBOL;
                 }
-                game.setPlayerBoard(myBoard);
+
             }
 
         }
-
+        return myBoard;
     }
 
     //OUT
@@ -177,101 +173,101 @@ public class GameLogicService {
 
     //OUT
 
-    public void playVersionTwo(Game game, User user, Scanner scanner) throws IOException, ParseException, InterruptedException {
-
-        String statusResponseString = utilityService.getStatusString(game.getGameId()); // gaunu status JSON paversta i stringa
-        String statusString = utilityService.getStatusFromResponse(statusResponseString); // is JSON psiimu status : " ..something.."
-        String nextPlayerId = utilityService.getNextPlayersTurnFromStatus(statusResponseString);
-        String shot;
-        String winnerId = utilityService.getWinnerId(statusResponseString);
-
-        while (!GameConstants.FINISHED.equals(statusString)) {  //while ciklo salyga jeigu status nelygu finished
-
-            while (winnerId.length() == 0 && !nextPlayerId.equals(user.getUserId())) {
-                statusResponseString = utilityService.getStatusString(game.getGameId());
-                statusString = utilityService.getStatusFromResponse(statusResponseString);
-                if (GameConstants.FINISHED.equals(statusString)) {
-                    break;
-                }
-                oponentsTurn(game, user);
-                statusResponseString = utilityService.getStatusString(game.getGameId());
-                winnerId = utilityService.getWinnerId(statusResponseString);
-                if (GameConstants.FINISHED.equals(statusString) || winnerId.length() != 0) {
-                    if (user.getUserId().equals(winnerId)) {
-                        System.out.println("YOU WIN!!!!");
-                        break;
-                    } else {
-                        System.out.println("YOU LOSE!!!");
-                        break;
-                    }
-                }
-                nextPlayerId = utilityService.getNextPlayersTurnFromStatus(utilityService.getStatusString(game.getGameId()));
-                statusString = utilityService.getStatusFromResponse(statusResponseString);
-                if (nextPlayerId.equals(user.getUserId())) {
-                    break;
-                }
-            }
-
-            if (winnerId.length() != 0) {
-                break;
-            }
-            statusResponseString = utilityService.getStatusString(game.getGameId());
-            markTheShot(game, user, statusResponseString);
-            drawGameBoard(game);
-            utilityService.shotHistory(game);
-
-            System.out.println("Your turn. Make your shot. E.g. T5");
-            shot = scanner.nextLine().toUpperCase();
-            String shotResponse = gameService.shoot(game, user, shot);
-
-            nextPlayerId = utilityService.getNextPlayersTurnFromStatus(shotResponse);
-            statusString = utilityService.getStatusFromResponse(shotResponse);
-            winnerId = utilityService.getWinnerId(shotResponse);
-            if (GameConstants.FINISHED.equals(statusString) || winnerId.length() != 0) {
-                if (user.getUserId().equals(winnerId)) {
-                    System.out.println("YOU WIN!!!!");
-                } else {
-                    System.out.println("YOU LOSE!!!");
-                    break;
-                }
-
-            }
-        }
-
-    }
-
-
-    public void oponentsTurn(Game game, User user) throws IOException, ParseException, InterruptedException {
-        String statusResponse = utilityService.getStatusString(game.getGameId());
-        String winnerId = utilityService.getWinnerId(statusResponse);
-        List<Event> eventListFromGame = game.getListOfEvents();
-        List<Event> eventListFromStatus = utilityService.setGameEventListFromStatus(statusResponse, game);
-        if (eventListFromGame.size() < eventListFromStatus.size() && winnerId.length() == 0) {
-            markTheShot(game, user, statusResponse);
-            drawGameBoard(game);
-            utilityService.shotHistory(game);
-
-        } else {
-            Thread.sleep(1000);
-            System.out.print("....");
-        }
-    }
-
-    public void playersTurn(Game game, User user, Scanner scanner) throws IOException, ParseException {
-
-        String statusResponseString = utilityService.getStatusString(game.getGameId());
-        markTheShot(game, user, statusResponseString);
-        drawGameBoard(game);
-        utilityService.shotHistory(game);
-        System.out.println("Your turn. Make your shot. E.g. T5");
-        String shot = scanner.nextLine().toUpperCase();
-        String shotResponse = gameService.shoot(game, user, shot);
-        game.setNextTurnForUserId(utilityService.getNextPlayersTurnFromStatus(shotResponse));
-        game.setStatus(utilityService.getStatusFromResponse(shotResponse));
-        game.setWinnerId(utilityService.getWinnerId(shotResponse));
-
-
-    }
+//    public void playVersionTwo(Game game, User user, Scanner scanner) throws IOException, ParseException, InterruptedException {
+//
+//        String statusResponseString = utilityService.getStatusString(game.getGameId()); // gaunu status JSON paversta i stringa
+//        String statusString = utilityService.getStatusFromResponse(statusResponseString); // is JSON psiimu status : " ..something.."
+//        String nextPlayerId = utilityService.getNextPlayersTurnFromStatus(statusResponseString);
+//        String shot;
+//        String winnerId = utilityService.getWinnerId(statusResponseString);
+//
+//        while (!GameConstants.FINISHED.equals(statusString)) {  //while ciklo salyga jeigu status nelygu finished
+//
+//            while (winnerId.length() == 0 && !nextPlayerId.equals(user.getUserId())) {
+//                statusResponseString = utilityService.getStatusString(game.getGameId());
+//                statusString = utilityService.getStatusFromResponse(statusResponseString);
+//                if (GameConstants.FINISHED.equals(statusString)) {
+//                    break;
+//                }
+//                oponentsTurn(game, user);
+//                statusResponseString = utilityService.getStatusString(game.getGameId());
+//                winnerId = utilityService.getWinnerId(statusResponseString);
+//                if (GameConstants.FINISHED.equals(statusString) || winnerId.length() != 0) {
+//                    if (user.getUserId().equals(winnerId)) {
+//                        System.out.println("YOU WIN!!!!");
+//                        break;
+//                    } else {
+//                        System.out.println("YOU LOSE!!!");
+//                        break;
+//                    }
+//                }
+//                nextPlayerId = utilityService.getNextPlayersTurnFromStatus(utilityService.getStatusString(game.getGameId()));
+//                statusString = utilityService.getStatusFromResponse(statusResponseString);
+//                if (nextPlayerId.equals(user.getUserId())) {
+//                    break;
+//                }
+//            }
+//
+//            if (winnerId.length() != 0) {
+//                break;
+//            }
+//            statusResponseString = utilityService.getStatusString(game.getGameId());
+//            markTheShot(game, user, statusResponseString);
+//            drawGameBoard(game);
+//            utilityService.shotHistory(game);
+//
+//            System.out.println("Your turn. Make your shot. E.g. T5");
+//            shot = scanner.nextLine().toUpperCase();
+//            String shotResponse = gameService.shoot(game, user, shot);
+//
+//            nextPlayerId = utilityService.getNextPlayersTurnFromStatus(shotResponse);
+//            statusString = utilityService.getStatusFromResponse(shotResponse);
+//            winnerId = utilityService.getWinnerId(shotResponse);
+//            if (GameConstants.FINISHED.equals(statusString) || winnerId.length() != 0) {
+//                if (user.getUserId().equals(winnerId)) {
+//                    System.out.println("YOU WIN!!!!");
+//                } else {
+//                    System.out.println("YOU LOSE!!!");
+//                    break;
+//                }
+//
+//            }
+//        }
+//
+//    }
+//
+//
+//    public void oponentsTurn(Game game, User user) throws IOException, ParseException, InterruptedException {
+//        String statusResponse = utilityService.getStatusString(game.getGameId());
+//        String winnerId = utilityService.getWinnerId(statusResponse);
+//        List<Event> eventListFromGame = game.getListOfEvents();
+//        List<Event> eventListFromStatus = utilityService.setGameEventListFromStatus(statusResponse, game);
+//        if (eventListFromGame.size() < eventListFromStatus.size() && winnerId.length() == 0) {
+//            markTheShot(game, user, statusResponse);
+//            drawGameBoard(game);
+//            utilityService.shotHistory(game);
+//
+//        } else {
+//            Thread.sleep(1000);
+//            System.out.print("....");
+//        }
+//    }
+//
+//    public void playersTurn(Game game, User user, Scanner scanner) throws IOException, ParseException {
+//
+//        String statusResponseString = utilityService.getStatusString(game.getGameId());
+//        markTheShot(game, user, statusResponseString);
+//        drawGameBoard(game);
+//        utilityService.shotHistory(game);
+//        System.out.println("Your turn. Make your shot. E.g. T5");
+//        String shot = scanner.nextLine().toUpperCase();
+//        String shotResponse = gameService.shoot(game, user, shot);
+//        game.setNextTurnForUserId(utilityService.getNextPlayersTurnFromStatus(shotResponse));
+//        game.setStatus(utilityService.getStatusFromResponse(shotResponse));
+//        game.setWinnerId(utilityService.getWinnerId(shotResponse));
+//
+//
+//    }
 
 }
 

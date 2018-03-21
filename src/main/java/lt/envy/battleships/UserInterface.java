@@ -59,23 +59,23 @@ public class UserInterface {
     }
     //STAY for now
     // For manual ship deployment
-    public void setupShipyard(Scanner scanner, Game game, GameService gameService) {
-        System.out.println("It's time to set up your battlefield!");
-        System.out.println("-----------------QUICK REMINDER-----------------------");
-        System.out.println("To deploy your ship enter the starting coordinate. ex. L3h");
-        System.out.println("'h' - for horizontal ship orientation, 'v' - for vertical");
-        System.out.println(".................................................................................................");
-        System.out.println("LETS BEGIN!");
-        for (int i = 0; i < Game.SHIPYARD_CONFIGURATION.length; i++) {
-            System.out.println("Deploy ship. Size: " + Game.SHIPYARD_CONFIGURATION[i]);
-            System.out.println("Enter the starting coordinate. For example: L4v");
-            String shipCoordinateString = utilityService.validateCoordinateInput(scanner);
-            Coordinate shipCoordinate = utilityService.convertInputStringToCoordinate(shipCoordinateString);
-            char orientationCharacter = utilityService.getOrientationCharFromInputString(shipCoordinateString);
-            Ship ship = logicService.generateShip(game, shipCoordinate, Game.SHIPYARD_CONFIGURATION[i], orientationCharacter);
-            logicService.addShipToShipyard(game, ship);
-        }
-    }
+//    public void setupShipyard(Scanner scanner, Game game, GameService gameService) {
+//        System.out.println("It's time to set up your battlefield!");
+//        System.out.println("-----------------QUICK REMINDER-----------------------");
+//        System.out.println("To deploy your ship enter the starting coordinate. ex. L3h");
+//        System.out.println("'h' - for horizontal ship orientation, 'v' - for vertical");
+//        System.out.println(".................................................................................................");
+//        System.out.println("LETS BEGIN!");
+//        for (int i = 0; i < Game.SHIPYARD_CONFIGURATION.length; i++) {
+//            System.out.println("Deploy ship. Size: " + Game.SHIPYARD_CONFIGURATION[i]);
+//            System.out.println("Enter the starting coordinate. For example: L4v");
+//            String shipCoordinateString = utilityService.validateCoordinateInput(scanner);
+//            Coordinate shipCoordinate = utilityService.convertInputStringToCoordinate(shipCoordinateString);
+//            char orientationCharacter = utilityService.getOrientationCharFromInputString(shipCoordinateString);
+//            Ship ship = logicService.generateShip(game, shipCoordinate, Game.SHIPYARD_CONFIGURATION[i], orientationCharacter);
+//            logicService.addShipToShipyard(game, ship);
+//        }
+//    }
 
 
 

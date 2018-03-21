@@ -36,15 +36,23 @@ public class App {
 
         User user = ui.setUpPlayer(scanner, userService);
 
-        GameData setupGameData = ui.initialiseGame(user, gameService);
+        GameData joinGameData = ui.initialiseGame(user, gameService);
 
-        utilityService.waitForGameStatusChange(setupGameData, GameConstants.READY_FOR_SHIPS);
+        utilityService.waitForGameStatusChange(joinGameData, GameConstants.READY_FOR_SHIPS);
 
-        List<Ship> loadedShipyard = utilityService.shipLoader(shipyard, setupGameData);
+        List<Ship> loadedShipyard = utilityService.shipLoader(shipyard, joinGameData);
 
-        gameLogicService.drawGameBoard(setupGameData,myBoard,enemyBoard);
 
-        utilityService.parseShipyardToUrl();
+        String shipyardCoordinateString = utilityService.parseShipyardToUrl(loadedShipyard);
+
+        GameData setupGameData = gameService.setup(joinGameData.getGameId(),user.getUserId(),shipyardCoordinateString);
+
+        myBoard = gameLogicService.setShipsToPlayerBoard(myBoard,loadedShipyard,setupGameData);
+
+        gameLogicService.drawGameBoard(joinGameData,myBoard,enemyBoard);
+
+        utilityService.waitForGameStatusChange(setupGameData,GameConstants.READY_TO_PLAY);
+
 
 
 //        // ONLINE BATTLESHIP
