@@ -10,6 +10,6 @@ public class GameConstants {
 //    public static final String READY_FOR_SHIPS = "READY_FOR_SHIPS";
     public static final String BOAT_HULL_SYMBOL = "\u0428";
     public static final String HIT_SYMBOL = "X";
-    public static final String MISS_SYMBOL = "O";
+    public static final String MISS_SYMBOL = ".";
     public static final String WATER_SYMBOL = "~";
 }

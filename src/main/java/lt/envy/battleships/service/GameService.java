@@ -22,8 +22,8 @@ import java.util.Scanner;
 
 public class GameService {
 
+
     private GameUtilityService utilityService = new GameUtilityService();
-    UserInterface ui = new UserInterface();
 
     public Game joinUser(String userId) throws IOException, ParseException {
 
@@ -69,43 +69,7 @@ public class GameService {
 
     }
 
-    public Ship generateShip(Game game, Coordinate startCoordinate, int shipSize, char orientation) {
-
-        List<String> columnHeaders = game.getColumns();
-        List<Long> rowHeaders = game.getRows();
-        String startCol = startCoordinate.getColumn();
-
-        int startRow = startCoordinate.getRow();
-
-        int columnIndex = columnHeaders.indexOf(startCol);
-        //Horizontal
-        // When ship is horizontal, the row is constant and we iterate trough columns
-        if ('h' == orientation) {
-            for (int i = 0; i < shipSize; i++) {
-                if (i == (shipSize - 1)) {
-                    return new Ship(startCoordinate, new Coordinate(columnHeaders.get(columnIndex + i), startRow));
-                }
-            }
-        }
-        //Vertical
-        if ('v' == orientation) {
-            for (int i = 0; i < shipSize; i++) {
-                if (i == (shipSize - 1)) {
-                    return new Ship(startCoordinate, new Coordinate(columnHeaders.get(columnIndex), (startRow + i)));
-                }
-            }
-        }
-        return null;
-    }
-
-    public void addShipToShipyard(Game game, Ship ship) {
-        List<Ship> shipyard = game.getShipyard();
-        shipyard.add(ship);
-        game.setShipyard(shipyard);
-    }
-
-    // take a result
-    public void sendShips(Game game, String shipyardCoordinates, String playerId) throws IOException {
+    public String sendShips(Game game, String shipyardCoordinates, String playerId) throws IOException {
 
         StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
         url.append("setup?").append("game_id=").append(game.getGameId())
@@ -116,14 +80,9 @@ public class GameService {
         HttpGet deployedShips = new HttpGet(url.toString());
         HttpResponse response = client.execute(deployedShips);
 
-        // currently not needed
-        //utilityService.convertInputStreamToString(response.getEntity().getContent());
+        return utilityService.convertInputStreamToString(response.getEntity().getContent());
     }
 
-    //TODO create method to update/redraw the board. (Maybe in UI class)
-
-    //TODO method to make a turn
-// shoot should return a response to work with
     public String shoot(Game game, User user, String target) throws IOException, ParseException {
 
         String statusResponse = utilityService.getStatusString(game.getGameId());
@@ -141,73 +100,5 @@ public class GameService {
 
     }
 
-    public void play(Game game, User user, Scanner scanner) throws IOException, ParseException, InterruptedException {
-
-        String statusResponse = utilityService.getStatusString(game.getGameId());
-        ui.drawGameBoard(game);
-        String winnerId = utilityService.getWinnerId(statusResponse);
-        while (winnerId.length() == 0) {
-            utilityService.shotHistory(game);
-            System.out.println("Take your aim. Enter a coordinate to shoot. For example T6");
-            String shot = scanner.nextLine();
-            String response = shoot(game, user, shot);
-            markTheShot(game, user, response);
-            ui.drawGameBoard(game);
-            statusResponse = utilityService.getStatusString(game.getGameId());
-            winnerId = utilityService.getWinnerId(statusResponse);
-
-            if (GameConstants.FINISHED.equals(utilityService.getStatusFromResponse(statusResponse))) {
-                System.out.println("WE HAVE A WINNER");
-                System.out.println("UserId: " + winnerId);
-                if (user.getUserId().equals(winnerId)) {
-                    System.out.println("YOU WIN!!!");
-                } else {
-                    System.out.println("ENEMY WINS!!!");
-                }
-                break;
-            }
-
-        }
-    }
-
-    public void markTheShot(Game game, User user, String response) throws ParseException {
-        List<String> columnList = game.getColumns();
-        List<Long> rowList = game.getRows();
-        // events 0
-//        List<Event> eventList = game.getListOfEvents();
-        List<Event> eventList = utilityService.setGameEventListFromStatus(response, game);
-        String[][] playerBoard = game.getPlayerBoard();
-        String[][] enemyBoard = game.getEnemyBoard();
-        for (Event ev : eventList) {
-            Coordinate eventCoordinate = ev.getCoordinate();
-            String col = eventCoordinate.getColumn();
-            long row = eventCoordinate.getRow();
-            int colIndex = columnList.indexOf(col);
-            int rowIndex = rowList.indexOf(row);
-            if (!ev.getUserId().equals(user.getUserId())) {
-                if (ev.isHit()) {
-                    playerBoard[rowIndex][colIndex] = GameConstants.HIT_SYMBOL;
-                    game.setPlayerBoard(playerBoard);
-                } else {
-                    playerBoard[rowIndex][colIndex] = GameConstants.MISS_SYMBOL;
-                    game.setPlayerBoard(playerBoard);
-
-                }
-
-
-            }
-            if (ev.getUserId().equals(user.getUserId())) {
-                if (ev.isHit()) {
-                    enemyBoard[rowIndex][colIndex] = GameConstants.HIT_SYMBOL;
-                    game.setEnemyBoard(enemyBoard);
-                } else {
-                    enemyBoard[rowIndex][colIndex] = GameConstants.MISS_SYMBOL;
-                    game.setEnemyBoard(enemyBoard);
-
-                }
-            }
-
-        }
-    }
 
 }

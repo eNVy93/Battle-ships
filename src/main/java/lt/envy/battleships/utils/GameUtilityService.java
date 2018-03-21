@@ -1,10 +1,7 @@
 package lt.envy.battleships.utils;
 
-import lt.envy.battleships.entity.Coordinate;
-import lt.envy.battleships.entity.Event;
-import lt.envy.battleships.entity.Game;
-import lt.envy.battleships.entity.Ship;
-import lt.envy.battleships.service.GameService;
+import lt.envy.battleships.entity.*;
+import lt.envy.battleships.service.GameLogicService;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,7 +20,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameUtilityService {
-    static GameService gameService = new GameService();
+    static GameLogicService logicService = new GameLogicService();
 
     public String convertInputStreamToString(InputStream inputStream) throws IOException {
         StringWriter writer = new StringWriter();
@@ -118,7 +115,9 @@ public class GameUtilityService {
         System.out.println(getStatusFromResponse(getStatusString(game.getGameId())));
     }
 
+
     public String getStatusString(String gameId) throws IOException {
+//        StringBuilder statusURL = new StringBuilder(URLConstants.REMOTE_SERVER_URL);
         StringBuilder statusURL = new StringBuilder(URLConstants.SERVER_URL);
         statusURL.append(URLConstants.GAME_STATUS_METHOD).append("game_id=").append(gameId);
 
@@ -171,7 +170,9 @@ public class GameUtilityService {
 
     }
 
-    public void shotHistory(Game game) throws ParseException, IOException {
+
+
+    public List<Event> shotHistory(Game game) throws ParseException, IOException {
         String statusResponse = getStatusString(game.getGameId());
 
         List<Event> eventList = setGameEventListFromStatus(statusResponse, game);
@@ -186,6 +187,7 @@ public class GameUtilityService {
         }
         System.out.println("..................................");
 
+        return lastThreeEvents;
     }
 // shouldnt take Game parameter. Return a list
     public void shipLoader(Game game) {
@@ -216,35 +218,35 @@ public class GameUtilityService {
             rows.add(9L);
         }
 
-        Ship carrier = gameService.generateShip(game, new Coordinate("L", 8), 4, 'h');
-        gameService.addShipToShipyard(game, carrier);
+        Ship carrier = logicService.generateShip(game, new Coordinate("L", 8), 4, 'h');
+        logicService.addShipToShipyard(game, carrier);
 
-        Ship battleCruiser = gameService.generateShip(game, new Coordinate("I", 4), 3, 'v');
-        gameService.addShipToShipyard(game, battleCruiser);
+        Ship battleCruiser = logicService.generateShip(game, new Coordinate("I", 4), 3, 'v');
+        logicService.addShipToShipyard(game, battleCruiser);
 
-        Ship battleCruiser2 = gameService.generateShip(game, new Coordinate("R", 1), 3, 'v');
-        gameService.addShipToShipyard(game, battleCruiser2);
+        Ship battleCruiser2 = logicService.generateShip(game, new Coordinate("R", 1), 3, 'v');
+        logicService.addShipToShipyard(game, battleCruiser2);
 
-        Ship cruiser = gameService.generateShip(game, new Coordinate("I", 1), 2, 'h');
-        gameService.addShipToShipyard(game, cruiser);
+        Ship cruiser = logicService.generateShip(game, new Coordinate("I", 1), 2, 'h');
+        logicService.addShipToShipyard(game, cruiser);
 
-        Ship cruiser2 = gameService.generateShip(game, new Coordinate("E", 3), 2, 'v');
-        gameService.addShipToShipyard(game, cruiser2);
+        Ship cruiser2 = logicService.generateShip(game, new Coordinate("E", 3), 2, 'v');
+        logicService.addShipToShipyard(game, cruiser2);
 
-        Ship cruiser3 = gameService.generateShip(game, new Coordinate("R", 6), 2, 'h');
-        gameService.addShipToShipyard(game, cruiser3);
+        Ship cruiser3 = logicService.generateShip(game, new Coordinate("R", 6), 2, 'h');
+        logicService.addShipToShipyard(game, cruiser3);
 
-        Ship boat = gameService.generateShip(game, new Coordinate("O", 3), 1, 'h');
-        gameService.addShipToShipyard(game, boat);
+        Ship boat = logicService.generateShip(game, new Coordinate("O", 3), 1, 'h');
+        logicService.addShipToShipyard(game, boat);
 
-        Ship boat1 = gameService.generateShip(game, new Coordinate("O", 5), 1, 'h');
-        gameService.addShipToShipyard(game, boat1);
+        Ship boat1 = logicService.generateShip(game, new Coordinate("O", 5), 1, 'h');
+        logicService.addShipToShipyard(game, boat1);
 
-        Ship boat2 = gameService.generateShip(game, new Coordinate("K", 9), 1, 'h');
-        gameService.addShipToShipyard(game, boat2);
+        Ship boat2 = logicService.generateShip(game, new Coordinate("K", 9), 1, 'h');
+        logicService.addShipToShipyard(game, boat2);
 
-        Ship boat3 = gameService.generateShip(game, new Coordinate("A", 8), 1, 'h');
-        gameService.addShipToShipyard(game, boat3);
+        Ship boat3 = logicService.generateShip(game, new Coordinate("A", 8), 1, 'h');
+        logicService.addShipToShipyard(game, boat3);
 
 
     }

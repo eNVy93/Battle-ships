@@ -21,6 +21,7 @@ public class UserService {
 
         //Build a URL
         StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
+//        StringBuilder url = new StringBuilder(URLConstants.REMOTE_SERVER_URL);
         url.append(URLConstants.CREATE_USER_METHOD);
         url.append("name=").append(name).append("&");
         url.append("email=").append(email);
