@@ -13,31 +13,25 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
-public class UserService extends WebService{
+public class UserService extends WebService {
 
     private GameUtilityService utilityService = new GameUtilityService();
 
     public User createUser(String name, String email) throws IOException, ParseException {
 
-        //Build a URL
         StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
         url.append(URLConstants.CREATE_USER_METHOD);
         url.append("name=").append(name).append("&");
         url.append("email=").append(email);
 
-        //Initiate http client
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet getRequest = new HttpGet(url.toString());
 
-        //Tell the client to send the request and save response to a variable
         HttpResponse response = client.execute(getRequest);
 
-        //Convert responses' InputStream to String
         String responseAsString = utilityService.convertInputStreamToString(response.getEntity().getContent());
 
-        //Then return new user
         return convertJsonToUser(responseAsString);
-
     }
 
     private User convertJsonToUser(String responce) throws ParseException {

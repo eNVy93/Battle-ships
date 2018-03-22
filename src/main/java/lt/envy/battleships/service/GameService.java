@@ -19,11 +19,7 @@ import java.util.List;
 
 public class GameService extends WebService {
 
-    public static final String CREATE_USER_METHOD = "create_user?";
-    public static final String JOIN_USER_METHOD = "join?";
-    public static final String SETUP_GAME_METHOD = "setup?";
-    public static final String GAME_STATUS_METHOD = "status?";
-    public static final String GAME_TURN_METHOD = "turn?";
+    public static int[] SHIPYARD_CONFIGURATION = {4,3,3,2,2,2,1,1,1,1};
 
     public GameData join(String userId) throws IOException, ParseException {
 
@@ -34,30 +30,28 @@ public class GameService extends WebService {
     }
 
     public GameData setup(String gameId, String playerId, String shipyardCoordinates) throws IOException, ParseException {
-        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
-        url.append("setup?").append("game_id=").append(gameId)
-                .append("&user_id=").append(playerId).append("&data=").append(shipyardCoordinates);
 
+        StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
+        url.append(URLConstants.SETUP_GAME_METHOD).append("game_id=").append(gameId)
+                .append("&user_id=").append(playerId).append("&data=").append(shipyardCoordinates);
 
         return performRequest(url.toString());
 
     }
 
     public GameData status(String gameId) throws IOException, ParseException {
+
         StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
         url.append(URLConstants.GAME_STATUS_METHOD).append("game_id=").append(gameId);
 
-
         return performRequest(url.toString());
-
     }
 
     public GameData turn(String gameId, String userId, String target) throws IOException, ParseException {
 
         StringBuilder url = new StringBuilder(URLConstants.SERVER_URL);
-        url.append("turn?").append("game_id=").append(gameId)
+        url.append(URLConstants.GAME_TURN_METHOD).append("game_id=").append(gameId)
                 .append("&user_id=").append(userId).append("&data=").append(target);
-
 
         return performRequest(url.toString());
 
@@ -66,7 +60,6 @@ public class GameService extends WebService {
 
     public GameData performRequest(String url) throws IOException, ParseException {
 
-
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet getRequest = new HttpGet(url);
 
@@ -74,11 +67,8 @@ public class GameService extends WebService {
         String responseString = convertInputStreamToString(response.getEntity().getContent());
         if (response.getStatusLine().getStatusCode() == 200) {
             return convertJsonToGameData(responseString);
-
         }
         return null;
-
-
     }
 
     public GameData convertJsonToGameData(String responseBody) throws ParseException {
