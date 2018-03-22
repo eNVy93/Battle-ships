@@ -6,6 +6,7 @@ import lt.envy.battleships.entity.Ship;
 import lt.envy.battleships.entity.User;
 import lt.envy.battleships.service.GameLogicService;
 import lt.envy.battleships.service.GameService;
+import lt.envy.battleships.service.LogicService;
 import lt.envy.battleships.service.UserService;
 import lt.envy.battleships.utils.GameConstants;
 import lt.envy.battleships.utils.GameUtilityService;
@@ -24,6 +25,7 @@ public class App {
     static GameLogicService gameLogicService = new GameLogicService();
     private static GameUtilityService utilityService = new GameUtilityService();
     private static Scanner scanner = new Scanner(System.in);
+    private static LogicService logicService = new LogicService();
 
     public static void main(String[] args) throws IOException, ParseException, InterruptedException {
         String[][] enemyBoard = gameLogicService.generateEmptyBoard();
@@ -52,6 +54,10 @@ public class App {
         gameLogicService.drawGameBoard(joinGameData,myBoard,enemyBoard);
 
         utilityService.waitForGameStatusChange(setupGameData,GameConstants.READY_TO_PLAY);
+
+        gameLogicService.play(myBoard,enemyBoard,setupGameData,user,scanner);
+
+
 
 
 

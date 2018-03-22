@@ -173,10 +173,10 @@ public class GameUtilityService {
 
 
 
-    public List<Event> shotHistory(Game game) throws ParseException, IOException {
+    public List<Event> shotHistory(GameData game) throws ParseException, IOException {
         String statusResponse = getStatusString(game.getGameId());
 
-        List<Event> eventList = setGameEventListFromStatus(statusResponse, game);
+        List<Event> eventList = game.getListOfEvents();
         List<Event> lastThreeEvents = eventList.subList(Math.max(eventList.size() - 3, 0), eventList.size());
         if(lastThreeEvents.size()==0){
 
