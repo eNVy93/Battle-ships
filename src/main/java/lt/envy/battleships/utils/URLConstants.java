@@ -2,7 +2,7 @@ package lt.envy.battleships.utils;
 
 public class URLConstants {
 
-    public static final String SERVER_URL = "http://192.168.1.37:8080/";
+    public static final String SERVER_URL = "http://192.168.1.38:8080/";
 //    public static final String SERVER_URL = "http://miskoverslas.lt/laivu_musis/";
     public static final String CREATE_USER_METHOD = "create_user?";
     public static final String JOIN_USER_METHOD = "join?";

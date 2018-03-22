@@ -2,14 +2,8 @@ package lt.envy.battleships.utils;
 
 import lt.envy.battleships.entity.*;
 import lt.envy.battleships.service.GameLogicService;
+import lt.envy.battleships.service.GameService;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -20,7 +14,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameUtilityService {
-    static GameLogicService logicService = new GameLogicService();
+    private GameLogicService logicService = new GameLogicService();
+    private GameService gameService = new GameService();
 
     public String convertInputStreamToString(InputStream inputStream) throws IOException {
         StringWriter writer = new StringWriter();
@@ -64,9 +59,7 @@ public class GameUtilityService {
                     }
                 }
             }
-
         }
-
         return null;
     }
 
@@ -81,13 +74,9 @@ public class GameUtilityService {
         return input.charAt(2);
     }
 
-
-
-    public String parseShipyardToUrl(Game game) {
-        List<Ship> shipyard = game.getShipyard();
+    public String parseShipyardToUrl(List<Ship> shipyard) {
         StringBuilder builder = new StringBuilder();
         for (Ship ship : shipyard) {
-            // Coordinates for URL looks like &data=K0-K3!L1-L3!L5-L7!M2-M3!M5-M6!M8-M9!E7-E7!S9-S9!R8-R8!R5-R5
             String startLetter = ship.getStartCoordinate().getColumn();
             String endLetter = ship.getEndCoordinate().getColumn();
             int startDigit = ship.getStartCoordinate().getRow();
@@ -99,85 +88,21 @@ public class GameUtilityService {
         return builder.toString();
     }
 
-    public String getStatusFromResponse(String response) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject gameStatus = (JSONObject) parser.parse(response);
-        return (String) gameStatus.get("status");
-    }
-
-    public void waitForGameStatusChange(Game game, String status) throws InterruptedException, IOException, ParseException {
+    public void waitForGameStatusChange(GameData game, String status) throws InterruptedException, IOException, ParseException {
         System.out.println("Waiting for other player");
-        while (!status.equals(getStatusFromResponse(getStatusString(game.getGameId())))) {
+        while (!status.equals(gameService.status(game.getGameId()).getStatus())) {
             Thread.sleep(3333);
             System.out.print(".......");
         }
         System.out.println("");
-        System.out.println(getStatusFromResponse(getStatusString(game.getGameId())));
+        System.out.println(gameService.status(game.getGameId()).getStatus());
     }
 
+    public void shotHistory(GameData game) throws ParseException, IOException {
 
-    public String getStatusString(String gameId) throws IOException {
-//        StringBuilder statusURL = new StringBuilder(URLConstants.REMOTE_SERVER_URL);
-        StringBuilder statusURL = new StringBuilder(URLConstants.SERVER_URL);
-        statusURL.append(URLConstants.GAME_STATUS_METHOD).append("game_id=").append(gameId);
-
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpGet getStatus = new HttpGet(statusURL.toString());
-
-        HttpResponse response = client.execute(getStatus);
-
-        return convertInputStreamToString(response.getEntity().getContent());
-
-    }
-
-    public List<Event> setGameEventListFromStatus(String response, Game game) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject gameStatus = (JSONObject) parser.parse(response);
-        JSONArray eventArray = (JSONArray) gameStatus.get("events");
-        List<Event> eventList = new ArrayList<>();
-        for (Object o : eventArray) {
-//            Event singleEvent = (Event) o;
-            JSONObject eventObject = (JSONObject) o;
-            long date = (long) eventObject.get("date");
-            String userId = (String) eventObject.get("userId");
-            boolean isHit = (boolean) eventObject.get("hit");
-
-            JSONObject coordinateObject = (JSONObject) eventObject.get("coordinate");
-            String column = (String) coordinateObject.get("column");
-            long row = (Long) coordinateObject.get("row");
-
-            Coordinate coordinate = new Coordinate(column, (int) row);
-            eventList.add(new Event(coordinate, date, userId, isHit));
-
-        }
-        game.setListOfEvents(eventList);
-        return eventList;
-
-    }
-
-    public String getNextPlayersTurnFromStatus(String response) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject gameStatus = (JSONObject) parser.parse(response);
-        return (String) gameStatus.get("nextTurnForUserId");
-    }
-
-    public String getWinnerId(String response) throws ParseException {
-
-        JSONParser parser = new JSONParser();
-        JSONObject gameStatus = (JSONObject) parser.parse(response);
-
-        return (String) gameStatus.get("winnerUserId");
-
-    }
-
-
-
-    public List<Event> shotHistory(Game game) throws ParseException, IOException {
-        String statusResponse = getStatusString(game.getGameId());
-
-        List<Event> eventList = setGameEventListFromStatus(statusResponse, game);
+        List<Event> eventList = game.getListOfEvents();
         List<Event> lastThreeEvents = eventList.subList(Math.max(eventList.size() - 3, 0), eventList.size());
-        if(lastThreeEvents.size()==0){
+        if (lastThreeEvents.size() == 0) {
 
         }
         System.out.println("...SHOT HISTORY. LAST 3 SHOTS...");
@@ -187,10 +112,9 @@ public class GameUtilityService {
         }
         System.out.println("..................................");
 
-        return lastThreeEvents;
     }
-// shouldnt take Game parameter. Return a list
-    public void shipLoader(Game game) {
+
+    public List<Ship> shipLoader(List<Ship> shipyard, GameData game) {
         List<String> cols = new ArrayList<>();
         {
             cols.add("K");
@@ -219,36 +143,37 @@ public class GameUtilityService {
         }
 
         Ship carrier = logicService.generateShip(game, new Coordinate("L", 8), 4, 'h');
-        logicService.addShipToShipyard(game, carrier);
+        logicService.addShipToShipyard(shipyard, carrier);
 
         Ship battleCruiser = logicService.generateShip(game, new Coordinate("I", 4), 3, 'v');
-        logicService.addShipToShipyard(game, battleCruiser);
+        logicService.addShipToShipyard(shipyard, battleCruiser);
 
         Ship battleCruiser2 = logicService.generateShip(game, new Coordinate("R", 1), 3, 'v');
-        logicService.addShipToShipyard(game, battleCruiser2);
+        logicService.addShipToShipyard(shipyard, battleCruiser2);
 
         Ship cruiser = logicService.generateShip(game, new Coordinate("I", 1), 2, 'h');
-        logicService.addShipToShipyard(game, cruiser);
+        logicService.addShipToShipyard(shipyard, cruiser);
 
         Ship cruiser2 = logicService.generateShip(game, new Coordinate("E", 3), 2, 'v');
-        logicService.addShipToShipyard(game, cruiser2);
+        logicService.addShipToShipyard(shipyard, cruiser2);
 
         Ship cruiser3 = logicService.generateShip(game, new Coordinate("R", 6), 2, 'h');
-        logicService.addShipToShipyard(game, cruiser3);
+        logicService.addShipToShipyard(shipyard, cruiser3);
 
         Ship boat = logicService.generateShip(game, new Coordinate("O", 3), 1, 'h');
-        logicService.addShipToShipyard(game, boat);
+        logicService.addShipToShipyard(shipyard, boat);
 
         Ship boat1 = logicService.generateShip(game, new Coordinate("O", 5), 1, 'h');
-        logicService.addShipToShipyard(game, boat1);
+        logicService.addShipToShipyard(shipyard, boat1);
 
         Ship boat2 = logicService.generateShip(game, new Coordinate("K", 9), 1, 'h');
-        logicService.addShipToShipyard(game, boat2);
+        logicService.addShipToShipyard(shipyard, boat2);
 
         Ship boat3 = logicService.generateShip(game, new Coordinate("A", 8), 1, 'h');
-        logicService.addShipToShipyard(game, boat3);
+        logicService.addShipToShipyard(shipyard, boat3);
 
 
+        return shipyard;
     }
 
 
