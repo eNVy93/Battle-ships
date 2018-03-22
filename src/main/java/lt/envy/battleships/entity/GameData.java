@@ -12,6 +12,9 @@ public class GameData {
     private List<String> columns;
     private List<Long> rows;
 
+    private String[][] playerBoard;
+    private String[][] enemyBoard;
+
     public GameData(String gameId, String status, List<Event> listOfEvents, String winnerId, String nextTurnForUserId, List<String> columns, List<Long> rows) {
         this.gameId = gameId;
         this.status = status;
@@ -76,5 +79,21 @@ public class GameData {
 
     public void setRows(List<Long> rows) {
         this.rows = rows;
+    }
+
+    public String[][] getPlayerBoard() {
+        return playerBoard;
+    }
+
+    public void setPlayerBoard(String[][] playerBoard) {
+        this.playerBoard = playerBoard;
+    }
+
+    public String[][] getEnemyBoard() {
+        return enemyBoard;
+    }
+
+    public void setEnemyBoard(String[][] enemyBoard) {
+        this.enemyBoard = enemyBoard;
     }
 }

@@ -28,10 +28,11 @@ public class App {
     private static LogicService logicService = new LogicService();
 
     public static void main(String[] args) throws IOException, ParseException, InterruptedException {
-        String[][] enemyBoard = gameLogicService.generateEmptyBoard();
-        String[][] myBoard = gameLogicService.generateEmptyBoard();
+
         List<Ship> shipyard = new ArrayList<>();
 
+        String[][] playerBoard ;
+        String[][] enemyBoard;
 
         Scanner scanner = new Scanner(System.in);
         ui.printGreeting();
@@ -44,18 +45,38 @@ public class App {
 
         List<Ship> loadedShipyard = utilityService.shipLoader(shipyard, joinGameData);
 
+        playerBoard = gameLogicService.generateEmptyBoard();
+        enemyBoard = gameLogicService.generateEmptyBoard();
 
         String shipyardCoordinateString = utilityService.parseShipyardToUrl(loadedShipyard);
 
-        GameData setupGameData = gameService.setup(joinGameData.getGameId(),user.getUserId(),shipyardCoordinateString);
+        GameData setupData = gameService.setup(joinGameData.getGameId(),user.getUserId(),shipyardCoordinateString);
 
-        myBoard = gameLogicService.setShipsToPlayerBoard(myBoard,loadedShipyard,setupGameData);
+        String[][] loadedPlayerBoard = gameLogicService.setShipsToPlayerBoard(playerBoard, loadedShipyard, setupData);
 
-        gameLogicService.drawGameBoard(joinGameData,myBoard,enemyBoard);
+        setupData.setEnemyBoard(enemyBoard);
+        setupData.setPlayerBoard(loadedPlayerBoard);
 
-        utilityService.waitForGameStatusChange(setupGameData,GameConstants.READY_TO_PLAY);
+//        gameLogicService.drawGameBoard(setupData);
 
-        gameLogicService.play(myBoard,enemyBoard,setupGameData,user,scanner);
+        utilityService.waitForGameStatusChange(setupData,GameConstants.READY_TO_PLAY);
+
+
+//        gameLogicService.drawGameBoard(setupData);
+        while(!gameService.status(setupData.getGameId()).getStatus().equals(GameConstants.FINISHED)){
+            GameData newData = gameService.status(setupData.getGameId());
+            newData.setPlayerBoard(setupData.getPlayerBoard());
+            newData.setEnemyBoard(setupData.getEnemyBoard());
+            gameLogicService.markTheTarget(newData,user);
+            gameLogicService.drawGameBoard(newData);
+            utilityService.shotHistory(newData);
+
+            GameData turnData = gameLogicService.takeTurn(newData,user,scanner);
+
+
+
+
+        }
 
 
 

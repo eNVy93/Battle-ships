@@ -50,11 +50,10 @@ public class GameLogicService {
     }
 
     //out
-    public void generatePlayerBoards(Game game) {
+    public void generatePlayerBoards(GameData game) {
         String[][] enemyBoard = generateEmptyBoard();
         String[][] myBoard = generateEmptyBoard();
-        game.setPlayerBoard(myBoard);
-        game.setEnemyBoard(enemyBoard);
+
     }
 
     //out
@@ -93,11 +92,11 @@ public class GameLogicService {
     }
 
     //Out
-    public void drawGameBoard(GameData game, String[][] playerBoard, String[][] enemyBoard) {
+    public void drawGameBoard(GameData game) {
         System.out.println(".......PLAYER_BOARD.....................");
-        printBoard(playerBoard, game);
+        printBoard(game.getPlayerBoard(), game);
         System.out.println(".......ENEMY_BOARD......................");
-        printBoard(enemyBoard, game);
+        printBoard(game.getEnemyBoard(), game);
     }
 
     //OUT
@@ -134,187 +133,96 @@ public class GameLogicService {
         return myBoard;
     }
 
-    //OUT
-    public String[][] markTheShot(GameData game, User user, String[][] playerBoard, String[][] enemyBoard) throws ParseException {
-        List<String> columnList = game.getColumns();
-        List<Long> rowList = game.getRows();
-        List<Event> eventList = game.getListOfEvents();
-        String[][] resultBoard = generateEmptyBoard();
+    public void markTheTarget(GameData game, User user) throws IOException, ParseException {
 
-        for (Event ev : eventList) {
+        GameData status = gameService.status(game.getGameId());
+        List<String> columns = status.getColumns();
+        List<Long> rows = status.getRows();
+        String[][] palyerBoard = game.getPlayerBoard();
+        String[][] enemyBoard = game.getEnemyBoard();
+        for (Event ev : status.getListOfEvents()) {
             Coordinate eventCoordinate = ev.getCoordinate();
             String col = eventCoordinate.getColumn();
             long row = eventCoordinate.getRow();
-            int colIndex = columnList.indexOf(col);
-            int rowIndex = rowList.indexOf(row);
             if (!ev.getUserId().equals(user.getUserId())) {
                 if (ev.isHit()) {
-                    playerBoard[rowIndex][colIndex] = GameConstants.HIT_SYMBOL;
-//                    game.setPlayerBoard(playerBoard);
-                } else {
-                    playerBoard[rowIndex][colIndex] = GameConstants.MISS_SYMBOL;
-//                    game.setPlayerBoard(playerBoard);
-
+                    palyerBoard[rows.indexOf(row)][columns.indexOf(col)] = GameConstants.HIT_SYMBOL;
                 }
-                resultBoard =  playerBoard;
+                if (!ev.isHit()) {
+                    palyerBoard[rows.indexOf(row)][columns.indexOf(col)] = GameConstants.MISS_SYMBOL;
+                }
 
-            }
-            if (ev.getUserId().equals(user.getUserId())) {
+            } else {
                 if (ev.isHit()) {
-                    enemyBoard[rowIndex][colIndex] = GameConstants.HIT_SYMBOL;
-//                    game.setEnemyBoard(enemyBoard);
-                } else {
-                    enemyBoard[rowIndex][colIndex] = GameConstants.MISS_SYMBOL;
-//                    game.setEnemyBoard(enemyBoard);
-
+                    enemyBoard[rows.indexOf(row)][columns.indexOf(col)] = GameConstants.HIT_SYMBOL;
                 }
-                resultBoard = enemyBoard;
-            }
+                if (!ev.isHit()) {
+                    enemyBoard[rows.indexOf(row)][columns.indexOf(col)] = GameConstants.MISS_SYMBOL;
+                }
 
+            }
         }
-        return resultBoard;
+
     }
 
-
-    public void play(String[][] myBoard, String[][] enemyBoard, GameData game, User user, Scanner scanner) throws IOException, ParseException, InterruptedException {
-
+    public GameData oponentsTurn(GameData game, User user) throws InterruptedException, IOException, ParseException {
         GameData statusData = gameService.status(game.getGameId());
-//        String nextPlayer = statusData.getNextTurnForUserId();
-        while (!GameConstants.FINISHED.equals(game.getStatus())) {
-            while (!statusData.getNextTurnForUserId().equals(user.getUserId())) {
-                oponentsTurn(statusData,user,myBoard,enemyBoard);
-                System.out.println("");
-//                gameLogicService.markTheShot(game, user, myBoard, enemyBoard);
-//                gameLogicService.drawGameBoard(game,myBoard,enemyBoard);
-//                utilityService.shotHistory(statusData);
-                statusData = gameService.status(game.getGameId());
-            }
-            markTheShot(game,user,myBoard,enemyBoard);
-            drawGameBoard(game,myBoard,enemyBoard);
-            utilityService.shotHistory(statusData);
-            System.out.println("YOUR TURN. IT'S YOUR TIME TO SHINE. LETS SHOOT SOME SHIPS. TYPE A COORDINATE e.g. L2 TO SHOOT");
-            String target = scanner.nextLine();
-            GameData turnData = gameService.turn(game.getGameId(),user.getUserId(),target);
-            enemyBoard = markTheShot(game,user,myBoard,enemyBoard);
-            drawGameBoard(game,myBoard,enemyBoard);
-            utilityService.shotHistory(turnData);
-            statusData = turnData;
-
-
-
-        }
-
-    }
-    public void oponentsTurn(GameData game, User user, String[][] myBoard, String[][] enemyBoard) throws IOException, ParseException, InterruptedException {
+        String winnerId = statusData.getWinnerId();
+        String nextPlayerId = statusData.getNextTurnForUserId();
         List<Event> eventListFromGame = game.getListOfEvents();
-        List<Event> eventListFromStatus = gameService.status(game.getGameId()).getListOfEvents();
-        if (eventListFromGame.size() < eventListFromStatus.size()) {
-            myBoard = markTheShot(game, user, myBoard, enemyBoard);
-            drawGameBoard(game,myBoard,enemyBoard);
-            utilityService.shotHistory(game);
-
-        } else {
+        List<Event> eventListFromStatus = statusData.getListOfEvents();
+        while(eventListFromGame.size() == eventListFromStatus.size()){
             Thread.sleep(1000);
             System.out.print("....");
+            statusData = gameService.status(game.getGameId());
+            eventListFromStatus = statusData.getListOfEvents();
         }
-    }
-    //OUT
+//        markTheTarget(game, user);
+        statusData.setPlayerBoard(game.getPlayerBoard());
+        statusData.setEnemyBoard(game.getEnemyBoard());
 
-//    public void playVersionTwo(Game game, User user, Scanner scanner) throws IOException, ParseException, InterruptedException {
+
+        return statusData;
+
+
+//        while(user.getUserId().equals(nextPlayerId)){
 //
-//        String statusResponseString = utilityService.getStatusString(game.getGameId()); // gaunu status JSON paversta i stringa
-//        String statusString = utilityService.getStatusFromResponse(statusResponseString); // is JSON psiimu status : " ..something.."
-//        String nextPlayerId = utilityService.getNextPlayersTurnFromStatus(statusResponseString);
-//        String shot;
-//        String winnerId = utilityService.getWinnerId(statusResponseString);
-//
-//        while (!GameConstants.FINISHED.equals(statusString)) {  //while ciklo salyga jeigu status nelygu finished
-//
-//            while (winnerId.length() == 0 && !nextPlayerId.equals(user.getUserId())) {
-//                statusResponseString = utilityService.getStatusString(game.getGameId());
-//                statusString = utilityService.getStatusFromResponse(statusResponseString);
-//                if (GameConstants.FINISHED.equals(statusString)) {
-//                    break;
-//                }
-//                oponentsTurn(game, user);
-//                statusResponseString = utilityService.getStatusString(game.getGameId());
-//                winnerId = utilityService.getWinnerId(statusResponseString);
-//                if (GameConstants.FINISHED.equals(statusString) || winnerId.length() != 0) {
-//                    if (user.getUserId().equals(winnerId)) {
-//                        System.out.println("YOU WIN!!!!");
-//                        break;
-//                    } else {
-//                        System.out.println("YOU LOSE!!!");
-//                        break;
-//                    }
-//                }
-//                nextPlayerId = utilityService.getNextPlayersTurnFromStatus(utilityService.getStatusString(game.getGameId()));
-//                statusString = utilityService.getStatusFromResponse(statusResponseString);
-//                if (nextPlayerId.equals(user.getUserId())) {
-//                    break;
-//                }
-//            }
-//
-//            if (winnerId.length() != 0) {
-//                break;
-//            }
-//            statusResponseString = utilityService.getStatusString(game.getGameId());
-//            markTheShot(game, user, statusResponseString);
-//            drawGameBoard(game);
-//            utilityService.shotHistory(game);
-//
-//            System.out.println("Your turn. Make your shot. E.g. T5");
-//            shot = scanner.nextLine().toUpperCase();
-//            String shotResponse = gameService.shoot(game, user, shot);
-//
-//            nextPlayerId = utilityService.getNextPlayersTurnFromStatus(shotResponse);
-//            statusString = utilityService.getStatusFromResponse(shotResponse);
-//            winnerId = utilityService.getWinnerId(shotResponse);
-//            if (GameConstants.FINISHED.equals(statusString) || winnerId.length() != 0) {
-//                if (user.getUserId().equals(winnerId)) {
-//                    System.out.println("YOU WIN!!!!");
-//                } else {
-//                    System.out.println("YOU LOSE!!!");
-//                    break;
-//                }
-//
-//            }
-//        }
-//
-//    }
-//
-//
-//    public void oponentsTurn(Game game, User user) throws IOException, ParseException, InterruptedException {
-//        String statusResponse = utilityService.getStatusString(game.getGameId());
-//        String winnerId = utilityService.getWinnerId(statusResponse);
-//        List<Event> eventListFromGame = game.getListOfEvents();
-//        List<Event> eventListFromStatus = utilityService.setGameEventListFromStatus(statusResponse, game);
-//        if (eventListFromGame.size() < eventListFromStatus.size() && winnerId.length() == 0) {
-//            markTheShot(game, user, statusResponse);
-//            drawGameBoard(game);
-//            utilityService.shotHistory(game);
-//
-//        } else {
 //            Thread.sleep(1000);
 //            System.out.print("....");
+//            if(!user.getUserId().equals(nextPlayerId)){
+//                break;
+//            }
 //        }
-//    }
-//
-//    public void playersTurn(Game game, User user, Scanner scanner) throws IOException, ParseException {
-//
-//        String statusResponseString = utilityService.getStatusString(game.getGameId());
-//        markTheShot(game, user, statusResponseString);
+//        return statusData;
+    }
+
+    public GameData takeTurn(GameData game, User user, Scanner scanner) throws IOException, ParseException, InterruptedException {
+        GameData statusData = gameService.status(game.getGameId());
+        String target;
 //        drawGameBoard(game);
 //        utilityService.shotHistory(game);
-//        System.out.println("Your turn. Make your shot. E.g. T5");
-//        String shot = scanner.nextLine().toUpperCase();
-//        String shotResponse = gameService.shoot(game, user, shot);
-//        game.setNextTurnForUserId(utilityService.getNextPlayersTurnFromStatus(shotResponse));
-//        game.setStatus(utilityService.getStatusFromResponse(shotResponse));
-//        game.setWinnerId(utilityService.getWinnerId(shotResponse));
-//
-//
-//    }
+
+        if (user.getUserId().equals(statusData.getNextTurnForUserId())) {
+            System.out.println("YOUR TURN. MAKE A MOVE. (e.g. T4): ");
+//            utilityService.shotHistory(game);
+            target = scanner.nextLine();
+            GameData turnData = gameService.turn(game.getGameId(), user.getUserId(), target);
+//            markTheTarget(game, user);
+            turnData.setEnemyBoard(game.getEnemyBoard());
+            turnData.setPlayerBoard(game.getPlayerBoard());
+//            utilityService.shotHistory(turnData);
+            return turnData;
+        }
+
+        statusData = oponentsTurn(game, user);
+        statusData.setPlayerBoard(game.getPlayerBoard());
+        statusData.setEnemyBoard(game.getEnemyBoard());
+        return statusData;
+
+
+    }
 
 }
+
+
 
